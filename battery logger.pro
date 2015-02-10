@@ -1,4 +1,4 @@
-update=2/9/2015 6:46:24 PM
+update=2/10/2015 4:00:42 PM
 version=1
 last_client=kicad
 [pcbnew]
@@ -56,8 +56,8 @@ LibName24=display
 LibName25=cypress
 LibName26=siliconi
 LibName27=opto
-LibName28=atmel
-LibName29=contrib
-LibName30=valves
-LibName31=op-amps
-LibName32=C:/Users/Peter.HOME/Dropbox/Projects/battery-logger/battery logger
+LibName28=contrib
+LibName29=valves
+LibName30=op-amps
+LibName31=C:/Users/Peter.HOME/Dropbox/Projects/battery-logger/battery logger
+LibName32=atmel

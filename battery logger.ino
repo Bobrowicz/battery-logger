@@ -37,10 +37,8 @@ volatile uint8_t enc_current_state;
 volatile uint8_t enc_last_state;
 volatile uint8_t enc_count = 0;
 volatile char flags;
-double batt_min_v;
 int batt_disch_i;
-double millamp_hour;
-double volts, amps, watt_hour;
+double volts, amps, watt_hour, millamp_hour, batt_min_v;
 double min_cell_v[] = { 0.9, 1.95, 2.8 };
 int discharge_current[] = { 100, 250, 500, 750, 1000 };
 int *testPW; // for testing; change to something more meaningful later
@@ -72,7 +70,6 @@ int main(int argc, char** argv)
 	setup();
 	// set up the LCD's number of columns and rows:
 	lcd.begin(16, 2);
-
 	// enable global interrupts
 	sei();
 
@@ -115,7 +112,7 @@ void setup()
 	pinMode(V_SET_PIN, OUTPUT);
 	pinMode(OPAMP_ENABLE_PIN, OUTPUT);
 
-	// fast pwn on timer1
+	// fast pwm timer1
 	TCCR1A = 0x83;
 	TCCR1B = 0x9;
 
