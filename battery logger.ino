@@ -43,7 +43,7 @@ double millamp_hour;
 double volts, amps, watt_hour;
 double min_cell_v[] = { 0.9, 1.95, 2.8 };
 int discharge_current[] = { 100, 250, 500, 750, 1000 };
-int *testPW;
+int *testPW; // for testing; change to something more meaningful later
 
 /*
 ** function prototypes
@@ -60,7 +60,6 @@ int state_0();
 int state_1();
 int state_2();
 int state_3();
-void rotary_encoder_test(void);
 
 // initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7);
@@ -76,8 +75,6 @@ int main(int argc, char** argv)
 
 	// enable global interrupts
 	sei();
-
-	//rotary_encoder_test();
 
 	// set up state machine
 	int(*state_machine[7])();
@@ -108,7 +105,7 @@ u_controller setup function
 *************************************************************************/
 void setup()
 {
-	Serial.begin(9600);
+	Serial.begin(9600); // for testing
 	// i/o
 	pinMode(ENC_PIN_A, INPUT);
 	pinMode(ENC_PIN_B, INPUT);
@@ -140,41 +137,6 @@ void rot_enc_init(void)
 
 	// Get initial encoder state
 	enc_last_state = PINC & ENC_PIN_AB; 
-}
-
-void rotary_encoder_test()
-{
-	Serial.println("In rotary test");
-	
-	long lastDebounceTime = 0;  // the last time the output pin was toggled
-	long debounceDelay = 50;    // the debounce time; increase if the output flickers
-	int last_button_state = HIGH;
-
-	while (1)
-	{
-		if (flags & ENC_POS_CHANGE)
-		{
-			Serial.println(enc_count);
-			flags &= ~ENC_POS_CHANGE;
-		}
-
-		if (flags & ENC_BUTTON_PRESSED)
-		{
-			Serial.println("button pressed");
-			flags &= ~ENC_BUTTON_PRESSED;
-			last_button_state = LOW;
-			
-
-		}
-
-		//if (digitalRead(ENC_PIN_BUTTON) != last_button_state)
-		//{
-		//	lastDebounceTime = millis();
-		//}
-		//if (millis() > (lastDebounceTime + debounceDelay))
-		//PCICR |= (1 << PCIE0); // Re-enable interrupt
-		PCICR |= (1 << PCIE1); // Re-enable interrupt
-	}
 }
 
 /*************************************************************************
@@ -364,56 +326,55 @@ void lcd_clear_line(int line)
 
 }
 
+// work in progress
 int selection(int *point)
 {
 	lcd.clear();
 	lcd.setCursor(0, 0);
-	lcd.print("Select current.");
+	lcd.print("Select current."); // for testing until i get stuff figured out
 	enc_count = 0;
-	int reading;
+
+	// button state and debounce variables
+	int button_reading;
 	int button_state = HIGH;
 	int last_button_state = HIGH;
 	long last_debounce_time;
 	int debounce_delay = 50;
+
+	// loop will run until button press is detected
 	while ((flags & ENC_BUTTON_PRESSED) == 0)
 	{
-
+		// check if rotary encoder has moved
 		if (flags & ENC_POS_CHANGE)
 		{
-			Serial.println(enc_count);
+			Serial.println(enc_count);  // test message
 			lcd_clear_line(1);
 			lcd.setCursor(0, 1);
-			lcd.print(point[enc_count]);
-			flags &= ~ENC_POS_CHANGE;
+			lcd.print(point[enc_count]); // prints array element
+			flags &= ~ENC_POS_CHANGE;  // clear flag
 		}
-		/*
-		if (flags & ENC_BUTTON_PRESSED)
-		{
-			Serial.println("button pressed");
-			flags &= ~ENC_BUTTON_PRESSED;
-		}
-		*/
-		reading = digitalRead(ENC_PIN_BUTTON);
-
-		if (reading != last_button_state) last_debounce_time = millis();
-
+		
+		// button polling and debounce
+		button_reading = digitalRead(ENC_PIN_BUTTON);
+		if (button_reading != last_button_state) last_debounce_time = millis();
 		if ((millis() - last_debounce_time) > debounce_delay)
 		{
-			if (reading != button_state)
+			if (button_reading != button_state)
 			{
-				button_state = reading;
+				button_state = button_reading;
 				if (button_state == LOW) flags |= ENC_BUTTON_PRESSED;
 			}
 		}
+		last_button_state = button_reading;
 
-		last_button_state = reading;
-
-		PCICR |= (1 << PCIE1); // Re-enable interrupt
-		//PCICR |= (1 << PCIE0); // Re-enable interrupt
+		// Re-enable interrupt
+		PCICR |= (1 << PCIE1); 
+		//PCICR |= (1 << PCIE0);
 	}
 	return point[enc_count];
 }
 
+// not using this right now
 ISR(PCINT0_vect)
 {
 	// Disable interrupt to prevent further triggering
@@ -443,13 +404,13 @@ ISR(PCINT1_vect)
 		enc_current_state |= (enc_last_state << 2);
 		enc_last_state = temp;
 
-		// Check which way encoder is turning and update counter variable.
-		if (/*enc_current_state == 0b11010000 || enc_current_state == 0b01000000 ||*/ enc_current_state == 0b00000010 /*|| enc_current_state == 0b00001011*/)
+		// Check if encoder state is valid and update variables
+		if (/*enc_current_state == 0b00001101 || enc_current_state == 0b00000100 ||*/ enc_current_state == 0b00000010 /*|| enc_current_state == 0b00001011*/)
 		{
 			enc_count++;
 			flags |= ENC_POS_CHANGE; // set change flag
 		}
-		if (/*enc_current_state == 0b11100000 || enc_current_state == 0b10000000 ||*/ enc_current_state == 0b00000001 /*|| enc_current_state == 0b00000111*/)
+		if (/*enc_current_state == 0b00001110 || enc_current_state == 0b00001000 ||*/ enc_current_state == 0b00000001 /*|| enc_current_state == 0b00000111*/)
 		{
 			enc_count--;
 			flags |= ENC_POS_CHANGE; // set change flag
