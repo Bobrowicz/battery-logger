@@ -1,0 +1,256 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:special
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:contrib
+LIBS:valves
+LIBS:op-amps
+LIBS:battery logger
+LIBS:atmel
+LIBS:battery logger-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 3 3
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L GND #PWR?
+U 1 1 54E66C26
+P 8000 1850
+F 0 "#PWR?" H 8000 1600 60  0001 C CNN
+F 1 "GND" H 8000 1700 60  0001 C CNN
+F 2 "" H 8000 1850 60  0000 C CNN
+F 3 "" H 8000 1850 60  0000 C CNN
+F 4 "Value" H 8000 1850 60  0001 C CNN "MPN"
+	1    8000 1850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6850 3250 6850 3450
+Wire Wire Line
+	5700 3450 6950 3450
+Wire Wire Line
+	5750 2850 5700 2850
+Wire Wire Line
+	5700 2850 5700 3450
+Connection ~ 6850 3450
+Wire Wire Line
+	7850 2900 7850 3650
+Connection ~ 7850 3450
+Wire Wire Line
+	7850 4150 7850 4200
+Wire Wire Line
+	7850 1850 7850 2500
+Wire Wire Line
+	5250 2650 5750 2650
+Wire Wire Line
+	5450 2800 5450 2650
+Connection ~ 5450 2650
+Wire Wire Line
+	5450 3200 5450 3250
+Wire Wire Line
+	7500 1750 8000 1750
+Wire Wire Line
+	4450 2650 4750 2650
+Wire Wire Line
+	7450 3450 8500 3450
+Wire Wire Line
+	8500 2200 7850 2200
+Connection ~ 7850 2200
+$Comp
+L IRL540N Q?
+U 1 1 54E66C53
+P 7750 2700
+F 0 "Q?" H 7750 2552 40  0000 R CNN
+F 1 "IRL540N" H 7750 2849 40  0000 R CNN
+F 2 "TO220" H 7571 2801 29  0000 C CNN
+F 3 "" H 7750 2700 60  0000 C CNN
+	1    7750 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 54E66C5B
+P 7200 2750
+F 0 "R?" V 7280 2750 50  0000 C CNN
+F 1 "100R" V 7207 2751 50  0000 C CNN
+F 2 "0805" V 7130 2750 30  0000 C CNN
+F 3 "https://www.seielect.com/catalog/SEI-RNCP.pd" H 7200 2750 30  0001 C CNN
+F 4 "RNCP0805FTD100R" V 7200 2750 60  0001 C CNN "MPN"
+	1    7200 2750
+	0    1    1    0   
+$EndComp
+$Comp
+L R R?
+U 1 1 54E66C63
+P 7200 3450
+F 0 "R?" V 7280 3450 50  0000 C CNN
+F 1 "10k" V 7207 3451 50  0000 C CNN
+F 2 "0805" V 7130 3450 30  0000 C CNN
+F 3 "https://www.seielect.com/catalog/SEI-RNCP.pdf" H 7200 3450 30  0001 C CNN
+F 4 "RNCP0805FTD10K0" V 7200 3450 60  0001 C CNN "MPN"
+	1    7200 3450
+	0    -1   -1   0   
+$EndComp
+$Comp
+L C C?
+U 1 1 54E66C6A
+P 6850 3050
+F 0 "C?" H 6900 3150 50  0000 L CNN
+F 1 "1u" H 6900 2950 50  0000 L CNN
+F 2 "" H 6888 2900 30  0000 C CNN
+F 3 "" H 6850 3050 60  0000 C CNN
+	1    6850 3050
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 54E66C71
+P 7850 4200
+F 0 "#PWR?" H 7850 3950 60  0001 C CNN
+F 1 "GND" H 7850 4050 60  0001 C CNN
+F 2 "" H 7850 4200 60  0000 C CNN
+F 3 "" H 7850 4200 60  0000 C CNN
+F 4 "Value" H 7850 4200 60  0001 C CNN "MPN"
+	1    7850 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 54E66C77
+P 6150 3250
+F 0 "#PWR?" H 6150 3000 60  0001 C CNN
+F 1 "GND" H 6150 3100 60  0001 C CNN
+F 2 "" H 6150 3250 60  0000 C CNN
+F 3 "" H 6150 3250 60  0000 C CNN
+F 4 "Value" H 6150 3250 60  0001 C CNN "MPN"
+	1    6150 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 54E66C7E
+P 5000 2650
+F 0 "R?" V 5080 2650 50  0000 C CNN
+F 1 "10k" V 5007 2651 50  0000 C CNN
+F 2 "0805" V 4930 2650 30  0000 C CNN
+F 3 "https://www.seielect.com/catalog/SEI-RNCP.pdf" H 5000 2650 30  0001 C CNN
+F 4 "RNCP0805FTD10K0" V 5000 2650 60  0001 C CNN "MPN"
+	1    5000 2650
+	0    -1   -1   0   
+$EndComp
+$Comp
+L C C?
+U 1 1 54E66C85
+P 5450 3000
+F 0 "C?" H 5500 3100 50  0000 L CNN
+F 1 "1u" H 5500 2900 50  0000 L CNN
+F 2 "" H 5488 2850 30  0000 C CNN
+F 3 "" H 5450 3000 60  0000 C CNN
+	1    5450 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 54E66C8C
+P 5450 3250
+F 0 "#PWR?" H 5450 3000 60  0001 C CNN
+F 1 "GND" H 5450 3100 60  0001 C CNN
+F 2 "" H 5450 3250 60  0000 C CNN
+F 3 "" H 5450 3250 60  0000 C CNN
+F 4 "Value" H 5450 3250 60  0001 C CNN "MPN"
+	1    5450 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L TS922 U?
+U 1 1 54E66C92
+P 6250 2750
+F 0 "U?" H 6200 2950 60  0000 L CNN
+F 1 "TS922" H 6200 2500 60  0000 L CNN
+F 2 "" H 6250 2750 60  0000 C CNN
+F 3 "" H 6250 2750 60  0000 C CNN
+	1    6250 2750
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_01X02 P?
+U 1 1 54E66C9A
+P 7300 1800
+F 0 "P?" H 7300 1950 50  0000 C CNN
+F 1 "CONN_01X02" V 7400 1800 50  0000 C CNN
+F 2 "" H 7300 1800 60  0000 C CNN
+F 3 "http://www.on-shore.com/sites/default/files/manuals/osttcxx2162.pdf" H 7300 1800 60  0001 C CNN
+F 4 "OSTTC022162" H 7300 1800 60  0001 C CNN "MPN"
+	1    7300 1800
+	-1   0    0    1   
+$EndComp
+$Comp
+L RW5S0 R?
+U 1 1 54E66CA8
+P 7850 3900
+F 0 "R?" V 7930 3900 50  0000 C CNN
+F 1 "1R" V 7857 3901 50  0000 C CNN
+F 2 "" V 7780 3900 30  0000 C CNN
+F 3 "http://www.ohmite.com/cat/res_rw.pdf" H 7850 3900 30  0001 C CNN
+F 4 "RW5S0FA1R00FE" V 7850 3900 60  0001 C CNN "MPN"
+	1    7850 3900
+	1    0    0    -1  
+$EndComp
+Text HLabel 4450 2350 0    28   Input ~ 0
+Enable
+Wire Wire Line
+	6150 2350 4450 2350
+Text HLabel 8500 2200 2    28   Output ~ 0
+V_SNS
+Text HLabel 8500 3450 2    28   Output ~ 0
+I_SNS
+Text HLabel 4450 2650 0    28   Input ~ 0
+V_SET
+Wire Wire Line
+	7850 1850 7500 1850
+Wire Wire Line
+	6150 3150 6150 3250
+Wire Wire Line
+	7450 2750 7550 2750
+Wire Wire Line
+	6750 2750 6950 2750
+Wire Wire Line
+	6850 2850 6850 2750
+Connection ~ 6850 2750
+Wire Wire Line
+	8000 1750 8000 1850
+$EndSCHEMATC
