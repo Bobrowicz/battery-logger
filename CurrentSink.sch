@@ -36,7 +36,7 @@ EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 3 3
+Sheet 3 4
 Title ""
 Date ""
 Rev ""
@@ -253,4 +253,35 @@ Wire Wire Line
 Connection ~ 6850 2750
 Wire Wire Line
 	8000 1750 8000 1850
+$Comp
+L C C?
+U 1 1 54ED2C5E
+P 10200 5000
+F 0 "C?" H 10250 5100 50  0000 L CNN
+F 1 "0.1u" H 10250 4900 50  0000 L CNN
+F 2 "" H 10238 4850 30  0000 C CNN
+F 3 "" H 10200 5000 60  0000 C CNN
+	1    10200 5000
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 54ED2C66
+P 10200 5300
+F 0 "#PWR?" H 10200 5050 60  0001 C CNN
+F 1 "GND" H 10200 5150 60  0001 C CNN
+F 2 "" H 10200 5300 60  0000 C CNN
+F 3 "" H 10200 5300 60  0000 C CNN
+F 4 "Value" H 10200 5300 60  0001 C CNN "MPN"
+	1    10200 5300
+	1    0    0    -1  
+$EndComp
+Text Label 10200 4750 1    28   ~ 0
+Enable
+Wire Wire Line
+	10200 4600 10200 4800
+Wire Wire Line
+	10200 5200 10200 5300
+Text Label 6050 2350 2    28   ~ 0
+Enable
 $EndSCHEMATC
