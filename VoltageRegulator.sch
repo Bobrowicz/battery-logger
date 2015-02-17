@@ -36,7 +36,7 @@ EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 2 4
+Sheet 2 5
 Title ""
 Date ""
 Rev ""
@@ -49,34 +49,24 @@ $EndDescr
 Wire Wire Line
 	4400 2600 4400 2400
 Wire Wire Line
-	4050 2400 4400 2400
+	4050 2400 4550 2400
 Wire Wire Line
-	4400 2400 4550 2400
-Wire Wire Line
-	5350 2400 5500 2400
-Wire Wire Line
-	5500 2400 5700 2400
+	5350 2400 5700 2400
 Wire Wire Line
 	5500 2400 5500 2600
 Wire Wire Line
 	4400 3000 4400 3050
 Wire Wire Line
-	4400 3050 4950 3050
-Wire Wire Line
-	4950 3050 5500 3050
+	4400 3050 5500 3050
 Wire Wire Line
 	5500 3050 5500 3000
 Wire Wire Line
-	4950 2700 4950 3050
-Wire Wire Line
-	4950 3050 4950 3150
+	4950 2700 4950 3150
 Connection ~ 4950 3050
 Connection ~ 5500 2400
 Connection ~ 4400 2400
 Wire Wire Line
-	4050 2500 4050 2600
-Wire Wire Line
-	4050 2600 4050 2850
+	4050 2500 4050 2850
 Connection ~ 4050 2600
 $Comp
 L LM2931ADT-5.0 U?
@@ -112,18 +102,6 @@ F 3 "" H 5500 2800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR?
-U 1 1 54E4428C
-P 4950 3150
-F 0 "#PWR?" H 4950 2900 60  0001 C CNN
-F 1 "GND" H 4950 3000 60  0001 C CNN
-F 2 "" H 4950 3150 60  0000 C CNN
-F 3 "" H 4950 3150 60  0000 C CNN
-F 4 "Value" H 4950 3150 60  0001 C CNN "MPN"
-	1    4950 3150
-	1    0    0    -1  
-$EndComp
-$Comp
 L BARREL_JACK CON?
 U 1 1 54E44292
 P 3750 2500
@@ -146,38 +124,6 @@ F 4 "Value" H 4050 2850 60  0001 C CNN "MPN"
 	1    4050 2850
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	4400 2600 4400 2400
-Wire Wire Line
-	4050 2400 4400 2400
-Wire Wire Line
-	4400 2400 4550 2400
-Wire Wire Line
-	5350 2400 5500 2400
-Wire Wire Line
-	5500 2400 5700 2400
-Wire Wire Line
-	5500 2400 5500 2600
-Wire Wire Line
-	4400 3000 4400 3050
-Wire Wire Line
-	4400 3050 4950 3050
-Wire Wire Line
-	4950 3050 5500 3050
-Wire Wire Line
-	5500 3050 5500 3000
-Wire Wire Line
-	4950 2700 4950 3050
-Wire Wire Line
-	4950 3050 4950 3150
-Connection ~ 4950 3050
-Connection ~ 5500 2400
-Connection ~ 4400 2400
-Wire Wire Line
-	4050 2500 4050 2600
-Wire Wire Line
-	4050 2600 4050 2850
-Connection ~ 4050 2600
 $Comp
 L VCC #PWR?
 U 1 1 54E44757

@@ -36,7 +36,7 @@ EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 3 4
+Sheet 2 5
 Title ""
 Date ""
 Rev ""
@@ -235,7 +235,7 @@ Enable
 Wire Wire Line
 	6150 2350 4450 2350
 Text HLabel 8500 2200 2    28   Output ~ 0
-V_SNS
+BATT_V
 Text HLabel 8500 3450 2    28   Output ~ 0
 I_SNS
 Text HLabel 4450 2650 0    28   Input ~ 0
@@ -284,4 +284,33 @@ Wire Wire Line
 	10200 5200 10200 5300
 Text Label 6050 2350 2    28   ~ 0
 Enable
+$Comp
+L C C?
+U 1 1 54EE33AE
+P 9750 5000
+F 0 "C?" H 9800 5100 50  0000 L CNN
+F 1 "1u" H 9800 4900 50  0000 L CNN
+F 2 "" H 9788 4850 30  0000 C CNN
+F 3 "" H 9750 5000 60  0000 C CNN
+	1    9750 5000
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 54EE33B5
+P 9750 5300
+F 0 "#PWR?" H 9750 5050 60  0001 C CNN
+F 1 "GND" H 9750 5150 60  0001 C CNN
+F 2 "" H 9750 5300 60  0000 C CNN
+F 3 "" H 9750 5300 60  0000 C CNN
+F 4 "Value" H 9750 5300 60  0001 C CNN "MPN"
+	1    9750 5300
+	1    0    0    -1  
+$EndComp
+Text Label 9750 4750 1    28   ~ 0
+Enable
+Wire Wire Line
+	9750 4600 9750 4800
+Wire Wire Line
+	9750 5200 9750 5300
 $EndSCHEMATC

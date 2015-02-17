@@ -1,0 +1,246 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:special
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:contrib
+LIBS:valves
+LIBS:op-amps
+LIBS:battery logger
+LIBS:atmel
+LIBS:battery logger-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 4 5
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L TL074 U?
+U 1 1 54EF1164
+P 4450 1300
+F 0 "U?" H 4500 1500 60  0000 C CNN
+F 1 "TL074" H 4600 1100 50  0000 C CNN
+F 2 "" H 4450 1300 60  0000 C CNN
+F 3 "" H 4450 1300 60  0000 C CNN
+	1    4450 1300
+	1    0    0    -1  
+$EndComp
+$Comp
+L TL074 U?
+U 2 1 54EF11FA
+P 4450 2850
+F 0 "U?" H 4500 3050 60  0000 C CNN
+F 1 "TL074" H 4600 2650 50  0000 C CNN
+F 2 "" H 4450 2850 60  0000 C CNN
+F 3 "" H 4450 2850 60  0000 C CNN
+	2    4450 2850
+	1    0    0    -1  
+$EndComp
+$Comp
+L TL074 U?
+U 3 1 54EF127D
+P 4450 4300
+F 0 "U?" H 4500 4500 60  0000 C CNN
+F 1 "TL074" H 4600 4100 50  0000 C CNN
+F 2 "" H 4450 4300 60  0000 C CNN
+F 3 "" H 4450 4300 60  0000 C CNN
+	3    4450 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L TL074 U?
+U 4 1 54EF132F
+P 4450 5750
+F 0 "U?" H 4500 5950 60  0000 C CNN
+F 1 "TL074" H 4600 5550 50  0000 C CNN
+F 2 "" H 4450 5750 60  0000 C CNN
+F 3 "" H 4450 5750 60  0000 C CNN
+	4    4450 5750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3350 1200 3950 1200
+Wire Wire Line
+	4950 1300 5400 1300
+Wire Wire Line
+	5000 1300 5000 1900
+Wire Wire Line
+	5000 1900 3900 1900
+Wire Wire Line
+	3900 1900 3900 1400
+Wire Wire Line
+	3900 1400 3950 1400
+Wire Wire Line
+	4950 2850 5400 2850
+Wire Wire Line
+	3900 3500 5000 3500
+Wire Wire Line
+	3900 3500 3900 2950
+Wire Wire Line
+	3900 2950 3950 2950
+Wire Wire Line
+	5000 3500 5000 2850
+Wire Wire Line
+	3950 2750 3500 2750
+$Comp
+L R R?
+U 1 1 54EF19F5
+P 3500 1950
+F 0 "R?" V 3580 1950 50  0000 C CNN
+F 1 "10k" V 3507 1951 50  0000 C CNN
+F 2 "" V 3430 1950 30  0000 C CNN
+F 3 "" H 3500 1950 30  0000 C CNN
+	1    3500 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 54EF1A73
+P 3500 3550
+F 0 "R?" V 3580 3550 50  0000 C CNN
+F 1 "3.3k" V 3507 3551 50  0000 C CNN
+F 2 "" V 3430 3550 30  0000 C CNN
+F 3 "" H 3500 3550 30  0000 C CNN
+	1    3500 3550
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 54EF1DE3
+P 3500 5050
+F 0 "R?" V 3580 5050 50  0000 C CNN
+F 1 "3.3k" V 3507 5051 50  0000 C CNN
+F 2 "" V 3430 5050 30  0000 C CNN
+F 3 "" H 3500 5050 30  0000 C CNN
+	1    3500 5050
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 54EF1E5C
+P 3500 6250
+F 0 "R?" V 3580 6250 50  0000 C CNN
+F 1 "3.3k" V 3507 6251 50  0000 C CNN
+F 2 "" V 3430 6250 30  0000 C CNN
+F 3 "" H 3500 6250 30  0000 C CNN
+	1    3500 6250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3500 2200 3500 3300
+Connection ~ 3500 2750
+$Comp
+L GND #PWR?
+U 1 1 54EF3AB7
+P 4350 1700
+F 0 "#PWR?" H 4350 1450 60  0001 C CNN
+F 1 "GND" H 4350 1550 60  0000 C CNN
+F 2 "" H 4350 1700 60  0000 C CNN
+F 3 "" H 4350 1700 60  0000 C CNN
+	1    4350 1700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3500 1700 3500 1200
+Connection ~ 3500 1200
+Wire Wire Line
+	3500 3800 3500 4800
+Wire Wire Line
+	3500 5300 3500 6000
+$Comp
+L GND #PWR?
+U 1 1 54EF8D4A
+P 3500 7250
+F 0 "#PWR?" H 3500 7000 60  0001 C CNN
+F 1 "GND" H 3500 7100 60  0000 C CNN
+F 2 "" H 3500 7250 60  0000 C CNN
+F 3 "" H 3500 7250 60  0000 C CNN
+	1    3500 7250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3500 6500 3500 7250
+Wire Wire Line
+	3950 4200 3500 4200
+Connection ~ 3500 4200
+Wire Wire Line
+	4950 4300 5400 4300
+Wire Wire Line
+	5000 4300 5000 4900
+Wire Wire Line
+	5000 4900 3900 4900
+Wire Wire Line
+	3900 4900 3900 4400
+Wire Wire Line
+	3900 4400 3950 4400
+Wire Wire Line
+	4950 5750 5400 5750
+Wire Wire Line
+	5000 5750 5000 6300
+Wire Wire Line
+	5000 6300 3900 6300
+Wire Wire Line
+	3900 6300 3900 5850
+Wire Wire Line
+	3900 5850 3950 5850
+Wire Wire Line
+	3950 5650 3500 5650
+Connection ~ 3500 5650
+$Comp
+L VCC #PWR?
+U 1 1 54EFD47E
+P 4350 900
+F 0 "#PWR?" H 4350 750 60  0001 C CNN
+F 1 "VCC" H 4350 1050 60  0000 C CNN
+F 2 "" H 4350 900 60  0000 C CNN
+F 3 "" H 4350 900 60  0000 C CNN
+	1    4350 900 
+	1    0    0    -1  
+$EndComp
+Text HLabel 3350 1200 0    47   Input ~ 0
+BATT_V
+Connection ~ 5000 1300
+Connection ~ 5000 2850
+Connection ~ 5000 4300
+Connection ~ 5000 5750
+Text HLabel 5400 5750 2    47   Output ~ 0
+V_SNS4
+Text HLabel 5400 4300 2    47   Output ~ 0
+V_SNS3
+Text HLabel 5400 2850 2    47   Output ~ 0
+V_SNS2
+Text HLabel 5400 1300 2    47   Input ~ 0
+V_SNS1
+$EndSCHEMATC
