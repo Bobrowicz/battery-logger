@@ -47,13 +47,9 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Wire Wire Line
-	3350 1200 3500 1200
+	3350 1200 3950 1200
 Wire Wire Line
-	3500 1200 3950 1200
-Wire Wire Line
-	4950 1300 5000 1300
-Wire Wire Line
-	5000 1300 5400 1300
+	4950 1300 5400 1300
 Wire Wire Line
 	5000 1300 5000 1900
 Wire Wire Line
@@ -63,9 +59,7 @@ Wire Wire Line
 Wire Wire Line
 	3900 1400 3950 1400
 Wire Wire Line
-	4950 2850 5050 2850
-Wire Wire Line
-	5050 2850 5400 2850
+	4950 2850 5400 2850
 Wire Wire Line
 	3900 3500 5050 3500
 Wire Wire Line
@@ -121,9 +115,7 @@ F 3 "" H 3500 6250 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	3500 2200 3500 2750
-Wire Wire Line
-	3500 2750 3500 3300
+	3500 2200 3500 3300
 Connection ~ 3500 2750
 $Comp
 L GND #PWR020
@@ -140,21 +132,18 @@ Wire Wire Line
 	3500 1700 3500 1200
 Connection ~ 3500 1200
 Wire Wire Line
-	3500 3800 3500 4200
+	3500 3800 3500 4800
 Wire Wire Line
-	3500 4200 3500 4800
-Wire Wire Line
-	3500 5300 3500 5650
-Wire Wire Line
-	3500 5650 3500 6000
+	3500 5300 3500 6000
 $Comp
 L GND #PWR021
 U 1 1 54EF8D4A
 P 3500 7250
 F 0 "#PWR021" H 3500 7000 60  0001 C CNN
-F 1 "GND" H 3500 7100 60  0000 C CNN
+F 1 "GND" H 3500 7100 60  0001 C CNN
 F 2 "" H 3500 7250 60  0000 C CNN
 F 3 "" H 3500 7250 60  0000 C CNN
+F 4 "Value" H 3500 7250 60  0001 C CNN "MPN"
 	1    3500 7250
 	1    0    0    -1  
 $EndComp
@@ -164,9 +153,7 @@ Wire Wire Line
 	3950 4200 3500 4200
 Connection ~ 3500 4200
 Wire Wire Line
-	4950 4300 5050 4300
-Wire Wire Line
-	5050 4300 5400 4300
+	4950 4300 5400 4300
 Wire Wire Line
 	5050 4300 5050 4900
 Wire Wire Line
@@ -176,9 +163,7 @@ Wire Wire Line
 Wire Wire Line
 	3900 4400 3950 4400
 Wire Wire Line
-	4950 5750 5050 5750
-Wire Wire Line
-	5050 5750 5400 5750
+	4950 5750 5400 5750
 Wire Wire Line
 	5050 5750 5050 6300
 Wire Wire Line

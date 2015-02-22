@@ -37,6 +37,11 @@ $CMP MOSFET_N
 F transistors/mos/*.*
 $ENDCMP
 #
+$CMP Net_Tie
+D Net Tie
+K jumper
+$ENDCMP
+#
 $CMP R
 D Resistance
 K R DEV

@@ -48,13 +48,13 @@ Comment4 ""
 $EndDescr
 $Comp
 L 74HC14 U601
-U 4 1 54F336E9
+U 6 1 54F336E9
 P 8100 1650
 F 0 "U601" H 8250 1750 40  0000 C CNN
 F 1 "74HC14" H 8300 1550 40  0000 C CNN
 F 2 "SMD_Packages:SOIC-14_N" H 8100 1650 60  0001 C CNN
 F 3 "" H 8100 1650 60  0000 C CNN
-	4    8100 1650
+	6    8100 1650
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -70,13 +70,13 @@ F 3 "" H 8100 2150 60  0000 C CNN
 $EndComp
 $Comp
 L 74HC14 U601
-U 6 1 54F33807
+U 4 1 54F33807
 P 8100 2650
 F 0 "U601" H 8250 2750 40  0000 C CNN
 F 1 "74HC14" H 8300 2550 40  0000 C CNN
 F 2 "SMD_Packages:SOIC-14_N" H 8100 2650 60  0001 C CNN
 F 3 "" H 8100 2650 60  0000 C CNN
-	6    8100 2650
+	4    8100 2650
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -125,7 +125,7 @@ F 4 "Value" H 3500 2500 60  0001 C CNN "MPN"
 	1    0    0    -1  
 $EndComp
 Text HLabel 9100 1650 2    28   Output ~ 0
-ENC_BTN
+ENC_SW
 Text HLabel 9100 2150 2    28   Output ~ 0
 ENC_A
 Text HLabel 9100 2650 2    28   Output ~ 0
@@ -353,6 +353,54 @@ F 4 "Value" H 3100 1850 60  0001 C CNN "MPN"
 	1    3100 1850
 	1    0    0    -1  
 $EndComp
+$Comp
+L GNDD #PWR040
+U 1 1 54EA916D
+P 9850 6050
+F 0 "#PWR040" H 9850 5800 60  0001 C CNN
+F 1 "GNDD" H 9850 5900 60  0000 C CNN
+F 2 "" H 9850 6050 60  0000 C CNN
+F 3 "" H 9850 6050 60  0000 C CNN
+	1    9850 6050
+	1    0    0    -1  
+$EndComp
+Text Label 4200 1650 0    28   ~ 0
+ENC_SW
+Text Label 4200 2150 0    28   ~ 0
+ENC_B
+Text Label 4200 2650 0    28   ~ 0
+ENC_A
+$Comp
+L CONN_01X04 P601
+U 1 1 54E921AD
+P 2650 4100
+F 0 "P601" H 2650 4350 50  0000 C CNN
+F 1 "CONN_01X04" V 2750 4100 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04" H 2650 4100 60  0001 C CNN
+F 3 "" H 2650 4100 60  0000 C CNN
+	1    2650 4100
+	-1   0    0    -1  
+$EndComp
+$Comp
+L GND #PWR041
+U 1 1 54E923A8
+P 2950 4350
+F 0 "#PWR041" H 2950 4100 60  0001 C CNN
+F 1 "GND" H 2950 4200 60  0001 C CNN
+F 2 "" H 2950 4350 60  0000 C CNN
+F 3 "" H 2950 4350 60  0000 C CNN
+F 4 "Value" H 2950 4350 60  0001 C CNN "MPN"
+	1    2950 4350
+	1    0    0    -1  
+$EndComp
+Text Label 2950 3950 0    28   ~ 0
+ENC_SW
+Text Label 2950 4050 0    28   ~ 0
+ENC_A
+Text Label 2950 4150 0    28   ~ 0
+ENC_B
+Text Notes 2450 4450 0    28   ~ 0
+Optional connector\nfor chasis mount
 Wire Wire Line
 	8550 1650 9100 1650
 Wire Wire Line
@@ -410,62 +458,14 @@ Wire Wire Line
 	3650 2500 3650 2450
 Wire Wire Line
 	3500 2450 3500 2500
-$Comp
-L GNDD #PWR040
-U 1 1 54EA916D
-P 9850 6050
-F 0 "#PWR040" H 9850 5800 60  0001 C CNN
-F 1 "GNDD" H 9850 5900 60  0000 C CNN
-F 2 "" H 9850 6050 60  0000 C CNN
-F 3 "" H 9850 6050 60  0000 C CNN
-	1    9850 6050
-	1    0    0    -1  
-$EndComp
-Text Label 4200 1650 0    28   ~ 0
-ENC_SW
-Text Label 4200 2150 0    28   ~ 0
-ENC_B
-Text Label 4200 2650 0    28   ~ 0
-ENC_A
-$Comp
-L CONN_01X04 P601
-U 1 1 54E921AD
-P 2650 4100
-F 0 "P601" H 2650 4350 50  0000 C CNN
-F 1 "CONN_01X04" V 2750 4100 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x04" H 2650 4100 60  0001 C CNN
-F 3 "" H 2650 4100 60  0000 C CNN
-	1    2650 4100
-	-1   0    0    -1  
-$EndComp
 Wire Wire Line
 	2850 4050 3200 4050
 Wire Wire Line
 	2850 4150 3200 4150
 Wire Wire Line
 	2850 3950 3200 3950
-$Comp
-L GND #PWR041
-U 1 1 54E923A8
-P 2950 4350
-F 0 "#PWR041" H 2950 4100 60  0001 C CNN
-F 1 "GND" H 2950 4200 60  0001 C CNN
-F 2 "" H 2950 4350 60  0000 C CNN
-F 3 "" H 2950 4350 60  0000 C CNN
-F 4 "Value" H 2950 4350 60  0001 C CNN "MPN"
-	1    2950 4350
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	2850 4250 2950 4250
 Wire Wire Line
 	2950 4250 2950 4350
-Text Label 2950 3950 0    28   ~ 0
-ENC_SW
-Text Label 2950 4050 0    28   ~ 0
-ENC_A
-Text Label 2950 4150 0    28   ~ 0
-EMC_B
-Text Notes 2450 4450 0    28   ~ 0
-Optional connector\nfor chasis mount
 $EndSCHEMATC

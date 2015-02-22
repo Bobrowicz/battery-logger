@@ -94,10 +94,10 @@ F 4 "C0603C180J5GACTU" H 2150 3050 60  0001 C CNN "MPN"
 	0    1    1    0   
 $EndComp
 $Comp
-L CONN_02X03 P301
+L CONN_02X03 P302
 U 1 1 54ECD716
 P 4100 1300
-F 0 "P301" H 4100 1500 50  0000 C CNN
+F 0 "P302" H 4100 1500 50  0000 C CNN
 F 1 "CONN_02X03" H 4100 1100 50  0000 C CNN
 F 2 "Pin_Headers:Pin_Header_Straight_2x03" H 4100 100 60  0001 C CNN
 F 3 "http://portal.fciconnect.com/Comergent//fci/drawing/67996.pdf" H 4100 100 60  0001 C CNN
@@ -111,7 +111,7 @@ U 1 1 54ECD732
 P 3950 3350
 F 0 "IC301" H 3200 4600 40  0000 L BNN
 F 1 "ATMEGA328-P" H 4350 1950 40  0000 L BNN
-F 2 "Sockets_DIP:DIP-28__600" H 3950 3350 30  0001 C CIN
+F 2 "Housings_QFP:TQFP-32_7x7mm_Pitch0.8mm" H 3950 3350 30  0001 C CIN
 F 3 "" H 3950 3350 60  0000 C CNN
 	1    3950 3350
 	1    0    0    -1  
@@ -152,12 +152,10 @@ F 3 "" H 4450 1500 60  0000 C CNN
 	1    4450 1500
 	1    0    0    -1  
 $EndComp
-Text Label 5250 2250 0    28   ~ 0
-Enable
 Text Label 5250 2350 0    28   ~ 0
 V_SET
 Text HLabel 6500 2250 2    28   Output ~ 0
-Enable
+ENABLE
 Text HLabel 6500 2350 2    28   Output ~ 0
 V_SET
 $Comp
@@ -198,13 +196,13 @@ $EndComp
 $Comp
 L GND #PWR011
 U 1 1 54ED54AE
-P 1700 2000
-F 0 "#PWR011" H 1700 1750 60  0001 C CNN
-F 1 "GND" H 1700 1850 60  0001 C CNN
-F 2 "" H 1700 2000 60  0000 C CNN
-F 3 "" H 1700 2000 60  0000 C CNN
-F 4 "Value" H 1700 2000 60  0001 C CNN "MPN"
-	1    1700 2000
+P 1700 1950
+F 0 "#PWR011" H 1700 1700 60  0001 C CNN
+F 1 "GND" H 1700 1800 60  0001 C CNN
+F 2 "" H 1700 1950 60  0000 C CNN
+F 3 "" H 1700 1950 60  0000 C CNN
+F 4 "Value" H 1700 1950 60  0001 C CNN "MPN"
+	1    1700 1950
 	1    0    0    -1  
 $EndComp
 Text Notes 2200 2100 2    59   ~ 0
@@ -388,7 +386,7 @@ Wire Wire Line
 Wire Wire Line
 	1800 1900 1700 1900
 Wire Wire Line
-	1700 1900 1700 2000
+	1700 1900 1700 1950
 Wire Wire Line
 	2400 1900 2900 1900
 Connection ~ 2900 1900
@@ -414,7 +412,7 @@ Wire Wire Line
 Wire Wire Line
 	4950 4350 6500 4350
 Text HLabel 6500 4050 2    28   Input ~ 0
-ENC_BTN
+ENC_SW
 Wire Wire Line
 	4950 4250 6500 4250
 Text HLabel 6500 4250 2    28   Input ~ 0
@@ -424,10 +422,10 @@ ENC_B
 Wire Wire Line
 	7150 2750 7150 2650
 $Comp
-L CONN_01X05 P302
+L CONN_01X05 P304
 U 1 1 54E8D784
 P 7700 2650
-F 0 "P302" H 7700 2950 50  0000 C CNN
+F 0 "P304" H 7700 2950 50  0000 C CNN
 F 1 "CONN_01X05" V 7800 2650 50  0000 C CNN
 F 2 "Socket_Strips:Socket_Strip_Straight_1x05" H 7700 2650 60  0001 C CNN
 F 3 "" H 7700 2650 60  0000 C CNN
@@ -539,4 +537,122 @@ Text Label 5000 2350 0    21   ~ 0
 PB1
 Text Label 5000 2250 0    21   ~ 0
 PB0
+Wire Wire Line
+	2650 5650 2850 5650
+Wire Wire Line
+	2650 5750 2850 5750
+Wire Wire Line
+	2650 5850 2850 5850
+Wire Wire Line
+	2650 6050 2850 6050
+Wire Wire Line
+	2650 6250 2850 6250
+Wire Wire Line
+	2650 6350 2850 6350
+Wire Wire Line
+	2650 6550 2850 6550
+Wire Wire Line
+	2650 6650 2850 6650
+Wire Wire Line
+	2650 6750 2850 6750
+Wire Wire Line
+	4400 5650 4600 5650
+Wire Wire Line
+	4400 5750 4600 5750
+Wire Wire Line
+	4400 5850 4600 5850
+Wire Wire Line
+	4400 5950 4600 5950
+Wire Wire Line
+	4400 6050 4600 6050
+Wire Wire Line
+	4400 6150 4600 6150
+Wire Wire Line
+	4400 6250 4600 6250
+Wire Wire Line
+	4400 6350 4600 6350
+Wire Wire Line
+	4400 6450 4600 6450
+Wire Wire Line
+	4400 6550 4600 6550
+Wire Wire Line
+	4400 6650 4600 6650
+Wire Wire Line
+	4400 6750 4600 6750
+Text Label 2700 5650 0    28   ~ 0
+PC6
+Text Label 2700 5750 0    28   ~ 0
+PD0
+Text Label 2700 5850 0    28   ~ 0
+PD1
+$Comp
+L CONN_01X12 P303
+U 1 1 54E93C55
+P 4200 6200
+F 0 "P303" H 4200 6850 50  0000 C CNN
+F 1 "CONN_01X12" V 4300 6200 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x12" H 4200 6200 60  0001 C CNN
+F 3 "" H 4200 6200 60  0000 C CNN
+	1    4200 6200
+	-1   0    0    -1  
+$EndComp
+$Comp
+L CONN_01X12 P301
+U 1 1 54E93D71
+P 2450 6200
+F 0 "P301" H 2450 6850 50  0000 C CNN
+F 1 "CONN_01X12" V 2550 6200 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x12" H 2450 6200 60  0001 C CNN
+F 3 "" H 2450 6200 60  0000 C CNN
+	1    2450 6200
+	-1   0    0    -1  
+$EndComp
+Text Label 2700 6050 0    28   ~ 0
+PD3
+Text Label 2700 6250 0    28   ~ 0
+PB6
+Text Label 2700 6750 0    28   ~ 0
+PB0
+Text Label 2700 6650 0    28   ~ 0
+PD7
+Text Label 2700 6550 0    28   ~ 0
+PD6
+Text Label 2700 6350 0    28   ~ 0
+PB7
+Text Label 4450 5650 0    28   ~ 0
+PC5
+Text Label 4450 5750 0    28   ~ 0
+PC4
+Text Label 4450 5850 0    28   ~ 0
+PC3
+Text Label 4450 5950 0    28   ~ 0
+PC2
+Text Label 4450 6050 0    28   ~ 0
+PC1
+Text Label 4450 6150 0    28   ~ 0
+PC0
+Text Label 4450 6750 0    28   ~ 0
+PB1
+Text Label 4450 6650 0    28   ~ 0
+PB2
+Text Label 4450 6550 0    28   ~ 0
+PB3
+Text Label 4450 6450 0    28   ~ 0
+PB4
+Text Label 4450 6350 0    28   ~ 0
+PB5
+Text Label 4450 6250 0    28   ~ 0
+AREF
+Wire Wire Line
+	2650 5950 2850 5950
+Wire Wire Line
+	2650 6150 2850 6150
+Wire Wire Line
+	2650 6450 2850 6450
+Text Label 2700 5950 0    28   ~ 0
+PD2
+Text Label 2700 6150 0    28   ~ 0
+PD4
+Text Label 2700 6450 0    28   ~ 0
+PD5
 $EndSCHEMATC

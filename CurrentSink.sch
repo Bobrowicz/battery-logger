@@ -165,7 +165,7 @@ F 4 "OSTTC022162" H 7300 1800 60  0001 C CNN "MPN"
 	-1   0    0    1   
 $EndComp
 Text HLabel 4450 2350 0    28   Input ~ 0
-Enable
+ENABLE
 Text HLabel 8500 2150 2    28   Output ~ 0
 BATT_V
 Text HLabel 8500 3450 2    28   Output ~ 0
@@ -197,9 +197,9 @@ F 4 "Value" H 10200 5300 60  0001 C CNN "MPN"
 	1    0    0    -1  
 $EndComp
 Text Label 10200 4750 1    28   ~ 0
-Enable
+V+
 Text Label 6050 2350 2    28   ~ 0
-Enable
+V+
 $Comp
 L C C203
 U 1 1 54EE33AE
@@ -225,7 +225,7 @@ F 4 "Value" H 9750 5300 60  0001 C CNN "MPN"
 	1    0    0    -1  
 $EndComp
 Text Label 9750 4750 1    28   ~ 0
-Enable
+V+
 $Comp
 L BUK9575 Q201
 U 1 1 54F59B25
@@ -237,20 +237,6 @@ F 3 "" H 7750 2750 60  0000 C CNN
 	1    7750 2750
 	1    0    0    -1  
 $EndComp
-$Comp
-L CONN_01X03 P202
-U 1 1 54F5B72F
-P 8400 2450
-F 0 "P202" H 8400 2650 50  0000 C CNN
-F 1 "CONN_01X03" V 8500 2450 50  0000 C CNN
-F 2 "battery logger:Terminal_Block_1x3_5.08mm" H 8400 2450 60  0001 C CNN
-F 3 "http://www.on-shore.com/sites/default/files/manuals/OSTTAXX4163.pdf" H 8400 2450 60  0001 C CNN
-F 4 "OSTTC032162" H 8400 2450 60  0001 C CNN "MPN"
-	1    8400 2450
-	1    0    0    -1  
-$EndComp
-Text Notes 9000 2400 2    28   ~ 0
-Optional connector \nfor off-board mount
 $Comp
 L TS922 U201
 U 1 1 54E66C92
@@ -310,19 +296,6 @@ Wire Wire Line
 Wire Wire Line
 	7850 2950 7850 3650
 Wire Wire Line
-	7500 2750 7500 2350
-Wire Wire Line
-	7500 2350 8200 2350
-Connection ~ 7500 2750
-Wire Wire Line
-	8200 2450 7850 2450
-Connection ~ 7850 2450
-Wire Wire Line
-	8200 2550 8200 3050
-Wire Wire Line
-	8200 3050 7850 3050
-Connection ~ 7850 3050
-Wire Wire Line
 	5700 3450 6950 3450
 Wire Wire Line
 	7450 3450 8500 3450
@@ -341,5 +314,16 @@ F 3 "http://www.ohmite.com/cat/res_rw.pdf" H 7850 3900 30  0001 C CNN
 F 4 "RW5S0FA1R00FE" H 7850 3900 60  0001 C CNN "MPN"
 	1    7850 3900
 	1    0    0    -1  
+$EndComp
+$Comp
+L HEATSINK HS201
+U 1 1 54E97CC6
+P 7950 2750
+F 0 "HS201" H 7950 2950 50  0000 C CNN
+F 1 "HEATSINK" H 7950 2700 50  0000 C CNN
+F 2 "battery logger:FA-T220-38E" H 7950 2750 60  0001 C CNN
+F 3 "" H 7950 2750 60  0000 C CNN
+	1    7950 2750
+	0    1    1    0   
 $EndComp
 $EndSCHEMATC

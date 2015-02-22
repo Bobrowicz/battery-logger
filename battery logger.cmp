@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2015-01-16 BZR 5376)-product   date = 2/21/2015 7:27:50 PM
+Cmp-Mod V01 Created by Cvpcb (2015-01-16 BZR 5376)-product   date = 2/22/2015 4:05:06 PM
 
 BeginCmp
 TimeStamp = /54E6466D/54E66C85;
@@ -120,10 +120,24 @@ IdModule  = Connect:BARREL_JACK;
 EndCmp
 
 BeginCmp
+TimeStamp = /54E6466D/54E97CC6;
+Reference = HS201;
+ValeurCmp = HEATSINK;
+IdModule  = battery logger:FA-T220-38E;
+EndCmp
+
+BeginCmp
 TimeStamp = /54EC6BB3/54ECD732;
 Reference = IC301;
 ValeurCmp = ATMEGA328-P;
-IdModule  = Sockets_DIP:DIP-28__600;
+IdModule  = Housings_QFP:TQFP-32_7x7mm_Pitch0.8mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E428BF/54ECD2BC;
+Reference = J501;
+ValeurCmp = Net_Tie;
+IdModule  = battery logger:Net_Tie;
 EndCmp
 
 BeginCmp
@@ -134,31 +148,31 @@ IdModule  = battery logger:Terminal_Block_1x2_5.08mm;
 EndCmp
 
 BeginCmp
-TimeStamp = /54E6466D/54F5B72F;
-Reference = P202;
-ValeurCmp = CONN_01X03;
-IdModule  = battery logger:Terminal_Block_1x3_5.08mm;
+TimeStamp = /54EC6BB3/54E93D71;
+Reference = P301;
+ValeurCmp = CONN_01X12;
+IdModule  = Pin_Headers:Pin_Header_Straight_1x12;
 EndCmp
 
 BeginCmp
 TimeStamp = /54EC6BB3/54ECD716;
-Reference = P301;
+Reference = P302;
 ValeurCmp = CONN_02X03;
 IdModule  = Pin_Headers:Pin_Header_Straight_2x03;
 EndCmp
 
 BeginCmp
-TimeStamp = /54EC6BB3/54E8D784;
-Reference = P302;
-ValeurCmp = CONN_01X05;
-IdModule  = Socket_Strips:Socket_Strip_Straight_1x05;
+TimeStamp = /54EC6BB3/54E93C55;
+Reference = P303;
+ValeurCmp = CONN_01X12;
+IdModule  = Pin_Headers:Pin_Header_Straight_1x12;
 EndCmp
 
 BeginCmp
-TimeStamp = /54E428BF/54F5E82E;
-Reference = P501;
-ValeurCmp = CONN_01X02;
-IdModule  = battery logger:Terminal_Block_1x2_3.5mm;
+TimeStamp = /54EC6BB3/54E8D784;
+Reference = P304;
+ValeurCmp = CONN_01X05;
+IdModule  = Socket_Strips:Socket_Strip_Straight_1x05;
 EndCmp
 
 BeginCmp
