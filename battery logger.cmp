@@ -1,0 +1,332 @@
+Cmp-Mod V01 Created by Cvpcb (2015-01-16 BZR 5376)-product   date = 2/21/2015 7:27:50 PM
+
+BeginCmp
+TimeStamp = /54E6466D/54E66C85;
+Reference = C201;
+ValeurCmp = 1u;
+IdModule  = Capacitors_SMD:C_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E6466D/54E66C6A;
+Reference = C202;
+ValeurCmp = 1u;
+IdModule  = Capacitors_SMD:C_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E6466D/54EE33AE;
+Reference = C203;
+ValeurCmp = 1u;
+IdModule  = Capacitors_SMD:C_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E6466D/54ED2C5E;
+Reference = C204;
+ValeurCmp = 0.1u;
+IdModule  = Capacitors_SMD:C_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54EC6BB3/54ECD707;
+Reference = C301;
+ValeurCmp = 18p;
+IdModule  = Capacitors_SMD:C_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /54EC6BB3/54ECD70F;
+Reference = C302;
+ValeurCmp = 18p;
+IdModule  = Capacitors_SMD:C_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /54EC6BB3/54ED2A1E;
+Reference = C303;
+ValeurCmp = 0.1u;
+IdModule  = Capacitors_SMD:C_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54EC6BB3/54EE11F5;
+Reference = C304;
+ValeurCmp = 0.01u;
+IdModule  = Capacitors_SMD:C_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54EE6259/54F36527;
+Reference = C401;
+ValeurCmp = 0.1u;
+IdModule  = Capacitors_SMD:C_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54EE6259/54F7E16B;
+Reference = C402;
+ValeurCmp = 1u;
+IdModule  = Capacitors_SMD:C_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E428BF/54E4427E;
+Reference = C501;
+ValeurCmp = 0.1u;
+IdModule  = Capacitors_SMD:C_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E428BF/54E44285;
+Reference = C502;
+ValeurCmp = 100u;
+IdModule  = battery logger:Capacitor6.4x6RM2.5;
+EndCmp
+
+BeginCmp
+TimeStamp = /54F30439/54F38832;
+Reference = C601;
+ValeurCmp = 1u;
+IdModule  = Capacitors_SMD:C_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54F30439/54F3892C;
+Reference = C602;
+ValeurCmp = 0.01u;
+IdModule  = Capacitors_SMD:C_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54F30439/54F38737;
+Reference = C603;
+ValeurCmp = 0.01u;
+IdModule  = Capacitors_SMD:C_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54F30439/54F3412E;
+Reference = C604;
+ValeurCmp = 0.1u;
+IdModule  = Capacitors_SMD:C_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E428BF/54E9FF42;
+Reference = CON501;
+ValeurCmp = BARREL_JACK;
+IdModule  = Connect:BARREL_JACK;
+EndCmp
+
+BeginCmp
+TimeStamp = /54EC6BB3/54ECD732;
+Reference = IC301;
+ValeurCmp = ATMEGA328-P;
+IdModule  = Sockets_DIP:DIP-28__600;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E6466D/54E66C9A;
+Reference = P201;
+ValeurCmp = CONN_01X02;
+IdModule  = battery logger:Terminal_Block_1x2_5.08mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E6466D/54F5B72F;
+Reference = P202;
+ValeurCmp = CONN_01X03;
+IdModule  = battery logger:Terminal_Block_1x3_5.08mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /54EC6BB3/54ECD716;
+Reference = P301;
+ValeurCmp = CONN_02X03;
+IdModule  = Pin_Headers:Pin_Header_Straight_2x03;
+EndCmp
+
+BeginCmp
+TimeStamp = /54EC6BB3/54E8D784;
+Reference = P302;
+ValeurCmp = CONN_01X05;
+IdModule  = Socket_Strips:Socket_Strip_Straight_1x05;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E428BF/54F5E82E;
+Reference = P501;
+ValeurCmp = CONN_01X02;
+IdModule  = battery logger:Terminal_Block_1x2_3.5mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /54F30439/54E921AD;
+Reference = P601;
+ValeurCmp = CONN_01X04;
+IdModule  = Pin_Headers:Pin_Header_Straight_1x04;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E6466D/54F59B25;
+Reference = Q201;
+ValeurCmp = BUK9575;
+IdModule  = Transistors_TO-220:TO-220_FET-GDS_Vertical_LargePads;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E6466D/54E66C7E;
+Reference = R201;
+ValeurCmp = 10k;
+IdModule  = Resistors_SMD:R_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E6466D/54E66C5B;
+Reference = R202;
+ValeurCmp = 100R;
+IdModule  = Resistors_SMD:R_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E6466D/54E66C63;
+Reference = R203;
+ValeurCmp = 10k;
+IdModule  = Resistors_SMD:R_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E6466D/54F760AD;
+Reference = R204;
+ValeurCmp = 1R;
+IdModule  = battery logger:FA;
+EndCmp
+
+BeginCmp
+TimeStamp = /54EC6BB3/54ECD73A;
+Reference = R301;
+ValeurCmp = 10k;
+IdModule  = Resistors_SMD:R_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54EE6259/54EF19F5;
+Reference = R401;
+ValeurCmp = 10k;
+IdModule  = Resistors_SMD:R_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54EE6259/54EF1A73;
+Reference = R402;
+ValeurCmp = 3.3k;
+IdModule  = Resistors_SMD:R_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54EE6259/54EF1DE3;
+Reference = R403;
+ValeurCmp = 3.3k;
+IdModule  = Resistors_SMD:R_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54EE6259/54EF1E5C;
+Reference = R404;
+ValeurCmp = 3.3k;
+IdModule  = Resistors_SMD:R_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54F30439/54F386AB;
+Reference = R601;
+ValeurCmp = 10k;
+IdModule  = Resistors_SMD:R_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54F30439/54F38652;
+Reference = R602;
+ValeurCmp = 10k;
+IdModule  = Resistors_SMD:R_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54F30439/54F38703;
+Reference = R603;
+ValeurCmp = 10k;
+IdModule  = Resistors_SMD:R_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54F30439/54F38614;
+Reference = R604;
+ValeurCmp = 10k;
+IdModule  = Resistors_SMD:R_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54F30439/54F3867B;
+Reference = R605;
+ValeurCmp = 10k;
+IdModule  = Resistors_SMD:R_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54F30439/54F38515;
+Reference = R606;
+ValeurCmp = 10k;
+IdModule  = Resistors_SMD:R_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54F30439/54EA34E5;
+Reference = ROT601;
+ValeurCmp = Rotary_Encoder;
+IdModule  = battery logger:PEC11R;
+EndCmp
+
+BeginCmp
+TimeStamp = /54EC6BB3/54ED5244;
+Reference = SW301;
+ValeurCmp = SW_PUSH;
+IdModule  = battery logger:B3F-10XX;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E6466D/54E66C92;
+Reference = U201;
+ValeurCmp = TS922;
+IdModule  = SMD_Packages:SOIC-8-N;
+EndCmp
+
+BeginCmp
+TimeStamp = /54EE6259/54F5685F;
+Reference = U401;
+ValeurCmp = TLC2274;
+IdModule  = SMD_Packages:SOIC-14_N;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E428BF/54E44277;
+Reference = U501;
+ValeurCmp = LM2931ADT-5.0;
+IdModule  = SMD_Packages:DPAK-2;
+EndCmp
+
+BeginCmp
+TimeStamp = /54F30439/54F336E9;
+Reference = U601;
+ValeurCmp = 74HC14;
+IdModule  = SMD_Packages:SOIC-14_N;
+EndCmp
+
+BeginCmp
+TimeStamp = /54EC6BB3/54ECD6FF;
+Reference = X301;
+ValeurCmp = CRYSTAL 16MHZ;
+IdModule  = Crystals:Crystal_HC49-U_Vertical;
+EndCmp
+
+EndListe

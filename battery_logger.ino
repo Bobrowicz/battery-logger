@@ -24,8 +24,8 @@
 #define I_SNS_PIN A3
 #define V_SET_PIN 9
 #define OPAMP_ENABLE_PIN 8
-#define V_REF 5.01 //4.74
-#define V_SUP 5.01 //4.74
+#define V_REF 4.7
+#define V_SUP 5.01 //4.67
 #define ADC_RES 1024
 #define PWM_RES 1024
 #define MOSFET_PWM OCR1A
@@ -103,6 +103,7 @@ u_controller setup function
 void setup()
 {
 	Serial.begin(9600); // for testing
+	analogReference(EXTERNAL);
 	// i/o
 	pinMode(ENC_PIN_A, INPUT);
 	pinMode(ENC_PIN_B, INPUT);
@@ -118,7 +119,7 @@ void setup()
 
 	// setup rotary encoder
 	rot_enc_init();
-	
+
 }
 
 void rot_enc_init(void)
@@ -133,12 +134,12 @@ void rot_enc_init(void)
 	PCMSK1 |= (1 << PCINT9) | (1 << PCINT8);
 
 	// Get initial encoder state
-	enc_last_state = PINC & ENC_PIN_AB; 
+	enc_last_state = PINC & ENC_PIN_AB;
 }
 
 /*************************************************************************
- wait for batttery to be attached.
- minimum voltage to register battery as connected is 0.9 V.
+wait for batttery to be attached.
+minimum voltage to register battery as connected is 0.9 V.
 *************************************************************************/
 int state_0()
 {
@@ -169,7 +170,7 @@ int state_0()
 }
 
 /*************************************************************************
- set up battery parameters
+set up battery parameters
 *************************************************************************/
 int state_1()
 {
@@ -197,8 +198,8 @@ int state_1()
 }
 
 /*************************************************************************
- discharge battery at constant current until cutoff voltage limit
- integrate energy used at one second intervals
+discharge battery at constant current until cutoff voltage limit
+integrate energy used at one second intervals
 *************************************************************************/
 int state_2()
 {
@@ -220,7 +221,7 @@ int state_2()
 
 	// turn on MOSFET
 	MOSFET_PWM = (V_SET_PIN, batt_disch_i);
-	
+
 
 	while (volts > batt_min_v)
 	{
@@ -275,8 +276,8 @@ void lcd_discharge_labels()
 	lcd.setCursor(9, 0);
 	lcd.print("A: ");
 	lcd.setCursor(0, 1);
-	lcd.print("Wh: ");	
-			
+	lcd.print("Wh: ");
+
 }
 
 void lcd_discharge_update()
@@ -287,7 +288,7 @@ void lcd_discharge_update()
 	Serial.print("	");
 	lcd.setCursor(12, 0);
 	lcd.print(amps);
-	Serial.println(amps,4);
+	Serial.println(amps, 4);
 	lcd.setCursor(4, 1);
 	lcd.print(watt_hour);
 	lcd.setCursor(10, 1);
@@ -350,7 +351,7 @@ int selection(int *point)
 			lcd.print(point[enc_count]); // prints array element
 			flags &= ~ENC_POS_CHANGE;  // clear flag
 		}
-		
+
 		// button polling and debounce
 		button_reading = digitalRead(ENC_PIN_BUTTON);
 		if (button_reading != last_button_state) last_debounce_time = millis();
@@ -365,7 +366,7 @@ int selection(int *point)
 		last_button_state = button_reading;
 
 		// Re-enable interrupt
-		PCICR |= (1 << PCIE1); 
+		PCICR |= (1 << PCIE1);
 		//PCICR |= (1 << PCIE0);
 	}
 	return point[enc_count];

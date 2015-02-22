@@ -36,7 +36,7 @@ EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 5
+Sheet 1 6
 Title ""
 Date ""
 Rev ""
@@ -68,6 +68,9 @@ F5 "V_SNS1" I L 3100 3450 28
 F6 "V_SNS2" I L 3100 3600 28 
 F7 "V_SNS3" I L 3100 3750 28 
 F8 "V_SNS4" I L 3100 3900 28 
+F9 "ENC_BTN" I L 3100 3000 28 
+F10 "ENC_A" I L 3100 2800 28 
+F11 "ENC_B" I L 3100 2900 28 
 $EndSheet
 Wire Wire Line
 	4250 2700 5600 2700
@@ -134,4 +137,19 @@ Wire Wire Line
 	2800 3450 3100 3450
 Wire Wire Line
 	6550 3200 7600 3200
+$Sheet
+S 1500 2500 800  850 
+U 54F30439
+F0 "Encoder Interface" 59
+F1 "EncoderInterface.sch" 59
+F2 "ENC_A" O R 2300 2800 28 
+F3 "ENC_B" O R 2300 2900 28 
+F4 "ENC_BTN" O R 2300 3000 28 
+$EndSheet
+Wire Wire Line
+	2300 2800 3100 2800
+Wire Wire Line
+	2300 2900 3100 2900
+Wire Wire Line
+	2300 3000 3100 3000
 $EndSCHEMATC

@@ -1,0 +1,56 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP 74HC04
+D Hex Inverseur
+K HCMOS not inv
+$ENDCMP
+#
+$CMP 74HC14
+D Hex Schmitt Trigger Inverer
+K CMOS hex not inverter trigger
+F http://www.ti.com/lit/ds/symlink/sn74hc14.pdf
+$ENDCMP
+#
+$CMP 74HCT04
+D Hex Inverseur
+K HCTMOS not inv
+$ENDCMP
+#
+$CMP 74LS14
+D Hex inverseur schmitt trigger
+K TTL not inv
+$ENDCMP
+#
+$CMP BUK9575
+D MOSFET N-CH 100V 23A
+K MOS-N logic
+F http://www.nxp.com/documents/data_sheet/BUK9575-100A.pdf
+$ENDCMP
+#
+$CMP LM2931ADT-5.0
+D LM2931, 100mA Low drop-out regulator, Fixed Output 5V
+K REGULATOR LDO 5V
+F http://www.ti.com/lit/ds/symlink/lm2931-n.pdf
+$ENDCMP
+#
+$CMP MOSFET_N
+F transistors/mos/*.*
+$ENDCMP
+#
+$CMP R
+D Resistance
+K R DEV
+$ENDCMP
+#
+$CMP Rotary_Encoder
+D Rotary encoder with push switch.
+K rotary
+$ENDCMP
+#
+$CMP TLC2274
+D Quad Op amp
+K rail-to-rail
+F http://www.ti.com/lit/ds/symlink/tlc2274.pdf
+$ENDCMP
+#
+#End Doc Library
