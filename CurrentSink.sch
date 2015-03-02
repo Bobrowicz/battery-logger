@@ -137,6 +137,7 @@ F 0 "C201" H 5500 3100 50  0000 L CNN
 F 1 "1u" H 5500 2900 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0805" H 5488 2850 30  0001 C CNN
 F 3 "" H 5450 3000 60  0000 C CNN
+F 4 "CL21B105KPFNNNE" H 5450 3000 60  0001 C CNN "MPN"
 	1    5450 3000
 	1    0    0    -1  
 $EndComp
@@ -307,7 +308,8 @@ P 7950 2750
 F 0 "HS201" H 7950 2950 50  0000 C CNN
 F 1 "HEATSINK" H 7950 2700 50  0000 C CNN
 F 2 "battery logger:FA-TO220-64E" H 7950 2750 60  0001 C CNN
-F 3 "" H 7950 2750 60  0000 C CNN
+F 3 "http://www.aavid.com/sites/default/files/literature/Aavid-Board-Level-Heatsinks-Catalog.pdf#page=56" H 7950 2750 60  0001 C CNN
+F 4 "530002B02500G" H 7950 2750 60  0001 C CNN "MPN"
 	1    7950 2750
 	0    1    1    0   
 $EndComp
@@ -315,22 +317,6 @@ Wire Wire Line
 	7850 1900 8350 1900
 Wire Wire Line
 	8450 1900 8800 1900
-$Comp
-L CONN_02X02 P202
-U 1 1 54ECA74C
-P 8400 1650
-F 0 "P202" H 8400 1800 50  0000 C CNN
-F 1 "CONN_02X02" H 8400 1500 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_2x02" H 8400 450 60  0001 C CNN
-F 3 "" H 8400 450 60  0000 C CNN
-	1    8400 1650
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	8450 1400 8650 1400
-Wire Wire Line
-	8650 1400 8650 1900
-Connection ~ 8650 1900
 Text Notes 8300 2100 0    28   ~ 0
 Local/remote \nvoltage sense\njumper.\n
 $Comp
@@ -382,7 +368,8 @@ P 5300 4350
 F 0 "TH201" V 5400 4400 50  0000 C CNN
 F 1 "THERMISTOR" V 5200 4350 50  0000 C BNN
 F 2 "battery logger:SolderWirePad_2x_0-8mmDrill" H 5300 4350 60  0001 C CNN
-F 3 "" H 5300 4350 60  0000 C CNN
+F 3 "http://www.vishay.com/docs/29094/23810294.pdf" H 5300 4350 60  0001 C CNN
+F 4 "NTCALUG02A103G" H 5300 4350 60  0001 C CNN "MPN"
 	1    5300 4350
 	1    0    0    -1  
 $EndComp
@@ -439,4 +426,15 @@ Wire Wire Line
 Wire Wire Line
 	5700 4900 5800 4900
 Connection ~ 6900 4800
+$Comp
+L CONN_01X02 P202
+U 1 1 54F4D1E0
+P 8400 1700
+F 0 "P202" H 8400 1850 50  0000 C CNN
+F 1 "CONN_01X02" V 8500 1700 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x02" H 8400 1700 60  0001 C CNN
+F 3 "" H 8400 1700 60  0000 C CNN
+	1    8400 1700
+	0    -1   -1   0   
+$EndComp
 $EndSCHEMATC

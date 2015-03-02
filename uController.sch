@@ -359,6 +359,7 @@ F 0 "SW301" H 2250 2010 50  0000 C CNN
 F 1 "SW_PUSH_4_PIN" H 2115 1635 50  0000 C CNN
 F 2 "battery logger:B3F-10XX" H 2100 1900 60  0001 C CNN
 F 3 "" H 2100 1900 60  0000 C CNN
+F 4 "B3F-1000" H 2100 1900 60  0001 C CNN "MPN"
 	1    2100 1900
 	1    0    0    -1  
 $EndComp
@@ -394,7 +395,8 @@ P 3950 3350
 F 0 "IC301" H 3200 4600 40  0000 L BNN
 F 1 "ATMEGA328P-A" H 4350 1950 40  0000 L BNN
 F 2 "Housings_QFP:TQFP-32_7x7mm_Pitch0.8mm" H 3950 3350 30  0000 C CIN
-F 3 "" H 3950 3350 60  0000 C CNN
+F 3 "http://www.atmel.com/images/Atmel-8271-8-bit-AVR-Microcontroller-ATmega48A-48PA-88A-88PA-168A-168PA-328-328P_datasheet_Complete.pdf" H 3950 3350 60  0001 C CNN
+F 4 "ATMEGA328P-AUR" H 3950 3350 60  0001 C CNN "MPN"
 	1    3950 3350
 	1    0    0    -1  
 $EndComp
@@ -648,17 +650,6 @@ F 3 "" H 4200 6850 60  0000 C CNN
 	1    4200 6850
 	1    0    0    -1  
 $EndComp
-$Comp
-L CONN_01X07 P303
-U 1 1 54F3565B
-P 5850 6850
-F 0 "P303" H 5850 7250 50  0000 C CNN
-F 1 "CONN_01X07" V 5950 6850 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x07" H 5850 6850 60  0001 C CNN
-F 3 "" H 5850 6850 60  0000 C CNN
-	1    5850 6850
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	5650 6550 5450 6550
 Wire Wire Line
@@ -679,12 +670,23 @@ Text Label 5600 6650 2    20   ~ 0
 RX
 Text Label 5600 6750 2    20   ~ 0
 ENABLE
-Text Label 5600 6850 2    20   ~ 0
-GND
-Text Label 5600 6950 2    20   ~ 0
+Text Label 5600 7150 2    20   ~ 0
 GND
 Text Label 5600 7050 2    20   ~ 0
 VCC
-Text Label 5600 7150 2    20   ~ 0
+Text Label 5600 6950 2    20   ~ 0
 VCC
+Text Label 5600 6850 2    20   ~ 0
+AUX
+$Comp
+L CONN_01X07 P303
+U 1 1 54F4D534
+P 5850 6850
+F 0 "P303" H 5850 7250 50  0000 C CNN
+F 1 "CONN_01X07" V 5950 6850 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x07" H 5850 6850 60  0001 C CNN
+F 3 "" H 5850 6850 60  0000 C CNN
+	1    5850 6850
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

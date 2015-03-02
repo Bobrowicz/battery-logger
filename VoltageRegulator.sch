@@ -80,7 +80,7 @@ P 4400 2800
 F 0 "C601" H 4450 2900 50  0000 L CNN
 F 1 "0.1u" H 4450 2700 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0805" H 4438 2650 30  0001 C CNN
-F 3 "" H 4400 2800 60  0000 C CNN
+F 3 "http://www.kemet.com/Lists/ProductCatalog/Attachments/53/KEM_C1002_X7R_SMD.pdf" H 4400 2800 60  0001 C CNN
 F 4 "C0805C104K4RACTU" H 4400 2800 60  0001 C CNN "MPN"
 	1    4400 2800
 	1    0    0    -1  
@@ -215,8 +215,8 @@ P 4000 2400
 F 0 "F601" H 4100 2450 50  0000 C CNN
 F 1 "FUSE" H 3900 2350 50  0000 C CNN
 F 2 "battery logger:PTC_1206" H 4000 2400 60  0001 C CNN
-F 3 "http://media.digikey.com/pdf/Data%20Sheets/Bel%20Fuse%20PDFs/0ZCC_Series.pdf" H 4000 2400 60  0001 C CNN
-F 4 "0ZCC0035FF2C" H 4000 2400 60  0001 C CNN "MPN"
+F 3 "http://media.digikey.com/pdf/Data%20Sheets/Bel%20Fuse%20PDFs/0ZCA_Series.pdf" H 4000 2400 60  0001 C CNN
+F 4 "0ZCA0020FF2E" H 4000 2400 60  0001 C CNN "MPN"
 	1    4000 2400
 	1    0    0    -1  
 $EndComp
