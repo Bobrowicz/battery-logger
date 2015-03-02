@@ -1,4 +1,4 @@
-update=2/23/2015 7:42:24 PM
+update=2/28/2015 6:16:08 AM
 version=1
 last_client=kicad
 [pcbnew]
@@ -59,5 +59,6 @@ LibName29=valves
 LibName30=op-amps
 LibName31=C:/Users/Peter.HOME/Dropbox/Projects/battery-logger/battery logger
 LibName32=atmel
+LibName33=battery logger
 [general]
 version=1

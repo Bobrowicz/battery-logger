@@ -52,6 +52,16 @@ D Rotary encoder with push switch.
 K rotary
 $ENDCMP
 #
+$CMP SW_PUSH
+D Push Button
+K Switch
+$ENDCMP
+#
+$CMP SW_PUSH_4_PIN
+D Push Button
+K Switch
+$ENDCMP
+#
 $CMP TLC2274
 D Quad Op amp
 K rail-to-rail

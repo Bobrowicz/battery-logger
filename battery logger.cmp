@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2015-01-16 BZR 5376)-product   date = 2/23/2015 6:25:11 PM
+Cmp-Mod V01 Created by Cvpcb (2015-01-16 BZR 5376)-product   date = 3/1/2015 8:44:30 PM
 
 BeginCmp
 TimeStamp = /54E6466D/54E66C85;
@@ -71,52 +71,66 @@ IdModule  = Capacitors_SMD:C_0805;
 EndCmp
 
 BeginCmp
-TimeStamp = /54E428BF/54E4427E;
-Reference = C501;
-ValeurCmp = 0.1u;
-IdModule  = Capacitors_SMD:C_0805;
-EndCmp
-
-BeginCmp
-TimeStamp = /54E428BF/54E44285;
-Reference = C502;
-ValeurCmp = 100u;
-IdModule  = battery logger:Capacitor6.4x6RM2.5;
-EndCmp
-
-BeginCmp
 TimeStamp = /54F30439/54F38832;
-Reference = C601;
+Reference = C501;
 ValeurCmp = 1u;
 IdModule  = Capacitors_SMD:C_0805;
 EndCmp
 
 BeginCmp
 TimeStamp = /54F30439/54F3892C;
-Reference = C602;
+Reference = C502;
 ValeurCmp = 0.01u;
 IdModule  = Capacitors_SMD:C_0805;
 EndCmp
 
 BeginCmp
 TimeStamp = /54F30439/54F38737;
-Reference = C603;
+Reference = C503;
 ValeurCmp = 0.01u;
 IdModule  = Capacitors_SMD:C_0805;
 EndCmp
 
 BeginCmp
 TimeStamp = /54F30439/54F3412E;
-Reference = C604;
+Reference = C504;
 ValeurCmp = 0.1u;
 IdModule  = Capacitors_SMD:C_0805;
 EndCmp
 
 BeginCmp
+TimeStamp = /54E428BF/54E4427E;
+Reference = C601;
+ValeurCmp = 0.1u;
+IdModule  = Capacitors_SMD:C_0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E428BF/54E44285;
+Reference = C602;
+ValeurCmp = 100u;
+IdModule  = battery logger:Capacitor6.4x6RM2.5;
+EndCmp
+
+BeginCmp
 TimeStamp = /54E428BF/54E9FF42;
-Reference = CON501;
+Reference = CON601;
 ValeurCmp = BARREL_JACK;
 IdModule  = Connect:BARREL_JACK;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E6466D/54EE33E8;
+Reference = D201;
+ValeurCmp = DIODESCH;
+IdModule  = Diodes_SMD:Diode-SMB_Standard;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E428BF/54F3B93B;
+Reference = F601;
+ValeurCmp = FUSE;
+IdModule  = battery logger:PTC_1206;
 EndCmp
 
 BeginCmp
@@ -127,17 +141,17 @@ IdModule  = battery logger:FA-TO220-64E;
 EndCmp
 
 BeginCmp
-TimeStamp = /54EC6BB3/54ECD732;
+TimeStamp = /54EC6BB3/54F0BCE5;
 Reference = IC301;
-ValeurCmp = ATMEGA328-P;
+ValeurCmp = ATMEGA328P-A;
 IdModule  = Housings_QFP:TQFP-32_7x7mm_Pitch0.8mm;
 EndCmp
 
 BeginCmp
 TimeStamp = /54E428BF/54ECD2BC;
-Reference = J501;
+Reference = J601;
 ValeurCmp = Net_Tie;
-IdModule  = battery logger:Net_Tie;
+IdModule  = battery logger:Net_Tie2;
 EndCmp
 
 BeginCmp
@@ -148,87 +162,52 @@ IdModule  = battery logger:Terminal_Block_1x2_5.08mm;
 EndCmp
 
 BeginCmp
-TimeStamp = /54EC6BB3/54EC9D04;
-Reference = P301;
-ValeurCmp = CONN_01X09;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x09;
+TimeStamp = /54E6466D/54ECA74C;
+Reference = P202;
+ValeurCmp = CONN_02X02;
+IdModule  = Pin_Headers:Pin_Header_Straight_2x02;
 EndCmp
 
 BeginCmp
 TimeStamp = /54EC6BB3/54ECD716;
+Reference = P301;
+ValeurCmp = CONN_02X03;
+IdModule  = Pin_Headers:Pin_Header_Straight_2x03;
+EndCmp
+
+BeginCmp
+TimeStamp = /54EC6BB3/54EC85AA;
 Reference = P302;
 ValeurCmp = CONN_02X03;
 IdModule  = Pin_Headers:Pin_Header_Straight_2x03;
 EndCmp
 
 BeginCmp
-TimeStamp = /54EC6BB3/54EC6303;
+TimeStamp = /54EC6BB3/54F3565B;
 Reference = P303;
-ValeurCmp = CONN_01X01;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x01;
+ValeurCmp = CONN_01X07;
+IdModule  = Pin_Headers:Pin_Header_Straight_1x07;
 EndCmp
 
 BeginCmp
-TimeStamp = /54EC6BB3/54EC639F;
+TimeStamp = /54EC6BB3/54F15464;
 Reference = P304;
-ValeurCmp = CONN_01X01;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x01;
+ValeurCmp = CONN_02X02;
+IdModule  = Pin_Headers:Pin_Header_Straight_2x02;
 EndCmp
 
 BeginCmp
-TimeStamp = /54EC6BB3/54EC63C7;
+TimeStamp = /54EC6BB3/54F16E1E;
 Reference = P305;
-ValeurCmp = CONN_01X01;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x01;
+ValeurCmp = CONN_01X07;
+IdModule  = Pin_Headers:Pin_Header_Straight_1x07;
 EndCmp
 
 BeginCmp
-TimeStamp = /54EC6BB3/54EC63F0;
-Reference = P306;
-ValeurCmp = CONN_01X01;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x01;
-EndCmp
-
-BeginCmp
-TimeStamp = /54EC6BB3/54EC641C;
-Reference = P307;
-ValeurCmp = CONN_01X01;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x01;
-EndCmp
-
-BeginCmp
-TimeStamp = /54EC6BB3/54EC6616;
-Reference = P308;
-ValeurCmp = CONN_01X01;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x01;
-EndCmp
-
-BeginCmp
-TimeStamp = /54EC6BB3/54EC664C;
-Reference = P309;
-ValeurCmp = CONN_01X01;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x01;
-EndCmp
-
-BeginCmp
-TimeStamp = /54EC6BB3/54EC667F;
-Reference = P310;
-ValeurCmp = CONN_01X01;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x01;
-EndCmp
-
-BeginCmp
-TimeStamp = /54EC6BB3/54EC67CB;
-Reference = P311;
-ValeurCmp = CONN_01X01;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x01;
-EndCmp
-
-BeginCmp
-TimeStamp = /54EC6BB3/54E8D784;
-Reference = P312;
-ValeurCmp = CONN_01X05;
-IdModule  = Socket_Strips:Socket_Strip_Straight_1x05;
+TimeStamp = /54E428BF/54F332B0;
+Reference = P601;
+ValeurCmp = CONN_01X02;
+IdModule  = Pin_Headers:Pin_Header_Straight_1x02;
 EndCmp
 
 BeginCmp
@@ -263,7 +242,14 @@ BeginCmp
 TimeStamp = /54E6466D/54F760AD;
 Reference = R204;
 ValeurCmp = 1R;
-IdModule  = battery logger:FA;
+IdModule  = battery logger:8035_J-Lead;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E6466D/54F267DA;
+Reference = R205;
+ValeurCmp = 10k;
+IdModule  = Resistors_SMD:R_0805;
 EndCmp
 
 BeginCmp
@@ -303,58 +289,65 @@ EndCmp
 
 BeginCmp
 TimeStamp = /54F30439/54F386AB;
-Reference = R601;
+Reference = R501;
 ValeurCmp = 10k;
 IdModule  = Resistors_SMD:R_0805;
 EndCmp
 
 BeginCmp
 TimeStamp = /54F30439/54F38652;
-Reference = R602;
+Reference = R502;
 ValeurCmp = 10k;
 IdModule  = Resistors_SMD:R_0805;
 EndCmp
 
 BeginCmp
 TimeStamp = /54F30439/54F38703;
-Reference = R603;
+Reference = R503;
 ValeurCmp = 10k;
 IdModule  = Resistors_SMD:R_0805;
 EndCmp
 
 BeginCmp
 TimeStamp = /54F30439/54F38614;
-Reference = R604;
+Reference = R504;
 ValeurCmp = 10k;
 IdModule  = Resistors_SMD:R_0805;
 EndCmp
 
 BeginCmp
 TimeStamp = /54F30439/54F3867B;
-Reference = R605;
+Reference = R505;
 ValeurCmp = 10k;
 IdModule  = Resistors_SMD:R_0805;
 EndCmp
 
 BeginCmp
 TimeStamp = /54F30439/54F38515;
-Reference = R606;
+Reference = R506;
 ValeurCmp = 10k;
 IdModule  = Resistors_SMD:R_0805;
 EndCmp
 
 BeginCmp
 TimeStamp = /54F30439/54EA34E5;
-Reference = ROT601;
+Reference = ROT501;
 ValeurCmp = Rotary_Encoder;
 IdModule  = battery logger:PEC11R;
 EndCmp
 
 BeginCmp
-TimeStamp = /54EC6BB3/54ED5244;
+TimeStamp = /54EC6BB3/54ECD623;
 Reference = SW301;
-ValeurCmp = SW_PUSH;
+ValeurCmp = SW_PUSH_4_PIN;
 IdModule  = battery logger:B3F-10XX;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E6466D/54F262E4;
+Reference = TH201;
+ValeurCmp = THERMISTOR;
+IdModule  = battery logger:SolderWirePad_2x_0-8mmDrill;
 EndCmp
 
 BeginCmp
@@ -372,17 +365,17 @@ IdModule  = SMD_Packages:SOIC-14_N;
 EndCmp
 
 BeginCmp
-TimeStamp = /54E428BF/54E44277;
+TimeStamp = /54F30439/54F336E9;
 Reference = U501;
-ValeurCmp = LM2931ADT-5.0;
-IdModule  = SMD_Packages:DPAK-2;
+ValeurCmp = 74HC14;
+IdModule  = SMD_Packages:SOIC-14_N;
 EndCmp
 
 BeginCmp
-TimeStamp = /54F30439/54F336E9;
+TimeStamp = /54E428BF/54E44277;
 Reference = U601;
-ValeurCmp = 74HC14;
-IdModule  = SMD_Packages:SOIC-14_N;
+ValeurCmp = LM2931ADT-5.0;
+IdModule  = SMD_Packages:DPAK-2;
 EndCmp
 
 BeginCmp
