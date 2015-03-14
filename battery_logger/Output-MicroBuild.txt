@@ -1,0 +1,7 @@
+﻿This build would be faster if you upgraded to Visual Micro Gold Edition + USB debugger http://www.visualmicro.com 
+Please wait ...
+Compiling 'battery_logger' for 'Arduino Nano w/ ATmega328'
+Binary sketch size: 11,820 bytes (used 38% of a 30,720 byte maximum) (0.43 secs)
+Minimum Memory Usage: 643 bytes (31% of a 2048 byte maximum)
+Uploading to I/O board using 'COM8'
+The port 'COM8' does not exist.
