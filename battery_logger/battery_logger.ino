@@ -1,5 +1,6 @@
+
 #include <LiquidCrystal_SPI\LiquidCrystal.h>
-#include "Wire.h"
+#include <Wire.h>
 #include <stdio.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -290,7 +291,7 @@ double adc_read(int pin)
 	double temp;
 
 	temp = analogRead(pin);
-	Serial.println(temp);
+	//Serial.println(temp);
 	temp = (temp * V_REF) / ADC_RES;
 
 	return temp;
@@ -370,6 +371,19 @@ int selection(int prompt)
 	{
 	case 1:
 		lcd.print("Battery Type.");
+		// loop will run until button press is detected
+		while ((flags & ENC_BUTTON_PRESSED) == 0)
+		{
+			// check if rotary encoder has moved
+			if (flags & ENC_POS_CHANGE)
+			{
+				Serial.println(enc_count);  // test message
+				lcd_clear_line(1);
+				lcd.setCursor(0, 1);
+				//lcd.print(point[enc_count]); // prints array element
+				flags &= ~ENC_POS_CHANGE;  // clear flag
+			}
+		}
 		break;
 	case 2:
 		lcd.print("Number of cells.");
@@ -379,14 +393,7 @@ int selection(int prompt)
 		lcd.print("Select current.");
 		break;
 	}
-	/*
-	// button state and debounce variables
-	int button_reading;
-	int button_state = HIGH;
-	int last_button_state = HIGH;
-	long last_debounce_time;
-	int debounce_delay = 1;
-
+	
 	// loop will run until button press is detected
 	while ((flags & ENC_BUTTON_PRESSED) == 0)
 	{
@@ -396,28 +403,12 @@ int selection(int prompt)
 			Serial.println(enc_count);  // test message
 			lcd_clear_line(1);
 			lcd.setCursor(0, 1);
-			lcd.print(point[enc_count]); // prints array element
+			//lcd.print(point[enc_count]); // prints array element
 			flags &= ~ENC_POS_CHANGE;  // clear flag
 		}
-
-		// button polling and debounce
-		button_reading = digitalRead(ENC_PIN_BUTTON);
-		if (button_reading != last_button_state) last_debounce_time = millis();
-		if ((millis() - last_debounce_time) > debounce_delay)
-		{
-			if (button_reading != button_state)
-			{
-				button_state = button_reading;
-				if (button_state == HIGH) flags |= ENC_BUTTON_PRESSED;
-			}
-		}
-		last_button_state = button_reading;
-
-		// Re-enable interrupt
-		PCICR |= (1 << ENC_PCIE);
 	}
-	return point[enc_count];
-	*/
+	//return point[enc_count];
+	
 }
 
 /* Interrupt routine triggered by button press */

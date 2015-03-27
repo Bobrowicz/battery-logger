@@ -12,13 +12,13 @@
 #define _VSARDUINO_H_
 #define __AVR_ATmega328p__
 #define __AVR_ATmega328P__
-#define ARDUINO 158
+#define ARDUINO 161
 #define ARDUINO_MAIN
 #define __AVR__
 #define __avr__
 #define F_CPU 16000000L
 #define __cplusplus
-#define GCC_VERSION 40301
+#define GCC_VERSION 40801
 #define ARDUINO_ARCH_AVR
 #define ARDUINO_AVR_NANO
 #define __inline__

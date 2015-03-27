@@ -1,4 +1,4 @@
-update=3/14/2015 12:33:55 PM
+update=3/26/2015 5:13:12 PM
 version=1
 last_client=kicad
 [pcbnew]
@@ -60,5 +60,18 @@ LibName30=op-amps
 LibName31=C:/Users/Peter.HOME/Dropbox/Projects/battery-logger/battery logger
 LibName32=atmel
 LibName33=battery logger
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceForceRefPrefix=0
+SpiceUseNetNumbers=0
+RptD_X=0
+RptD_Y=100
+RptLab=1
+LabSize=60
 [general]
 version=1
