@@ -1,6 +1,12 @@
-
-#include <LiquidCrystal_SPI\LiquidCrystal.h>
+/*
+ * battery_logger.ino
+ *
+ * Created: 3/20/2015 10:55:15 PM
+ * Author: Peter
+ */ 
 #include <Wire.h>
+//#include <LiquidCrystal_SPI/Adafruit_MCP23008.h>
+#include <LiquidCrystal_SPI/LiquidCrystal.h>
 #include <stdio.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -12,8 +18,8 @@
 */
 #define ENC_POS_CHANGE 0x01
 #define ENC_BUTTON_PRESSED 0x02
-#define BOOL3 0x04
-#define BOOL4 0x08
+#define ENC_UP 0x04
+#define ENC_DOWN 0x08
 #define BOOL5 0x10
 #define BOOL6 0x20
 #define BOOL7 0x40
@@ -29,11 +35,11 @@
 #define ENC_INT_PIN_A PCINT21
 #define ENC_INT_PIN_B PCINT20
 #define V_SNS_PIN A3
-#define I_SNS_PIN A2
+#define I_SNS_PIN A4
 #define V_SET_PIN 9
-#define OPAMP_ENABLE_PIN 8
-#define V_REF 4.7
-#define V_SUP 5.01
+#define OPAMP_ENABLE_PIN 3
+#define V_REF 4.99
+#define V_SUP 4.99
 #define ADC_RES 1024
 #define PWM_RES 1024
 #define MOSFET_PWM OCR1A
@@ -46,12 +52,8 @@ volatile uint8_t enc_last_state;
 volatile uint8_t enc_count = 0;
 volatile char flags;
 int batt_disch_i;
-double volts, amps, watt_hour, millamp_hour, batt_min_v;
-double min_cell_v[] = { 0.9, 1.95, 2.8 };
-int num_of_cells[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
-int discharge_current[] = { 100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000 };
-String batt_types[] = { "NiMh", "Lead Acid", "Li-ion" };
-int *testPW; // for testing; change to something more meaningful later
+float batt_min_v;
+double volts, amps, watt_hour, millamp_hour;
 
 /*
 ** function prototypes
@@ -63,7 +65,9 @@ void lcd_complete_message(void);
 void lcd_complete_summary(void);
 void lcd_clear_line(int);
 double adc_read(int);
-//int selection(int *);
+float select_battery(void);
+float set_discharge_current(void);
+int set_num_of_cells(void);
 int selection(int);
 int state_0();
 int state_1();
@@ -71,12 +75,11 @@ int state_2();
 int state_3();
 void lcd_print_string(char);
 
-// Connect via SPI. Data pin is #11, Clock is #12 and Latch is #10
-LiquidCrystal lcd(11, 12, 10);
+// Connect via SPI. Data pin is #11, Clock is #13 and Latch is #10
+LiquidCrystal lcd(11, 13, 10);
 
 int main(int argc, char** argv)
 {
-	// dont know what init() does but it's needed
 	init();
 	// uC setup
 	setup();
@@ -112,13 +115,12 @@ u_controller setup function
 *************************************************************************/
 void setup()
 {
-	Serial.begin(9600); // for testing
-	analogReference(EXTERNAL);
+	//analogReference(EXTERNAL);
 
 	// set up the LCD's number of columns and rows:
 	lcd.begin(16, 2);
 	lcd.setBacklight(HIGH);
-
+	
 	// i/o
 	pinMode(ENC_PIN_A, INPUT);
 	pinMode(ENC_PIN_B, INPUT);
@@ -133,11 +135,6 @@ void setup()
 	TCCR1B = 0x9;
 
 	// set up rotary encoder
-	rot_enc_init();
-}
-
-void rot_enc_init(void)
-{
 	// Set interrupt sense control to rising edge
 	EICRA |= (1 << ISC01) | (1 << ISC00);
 	// Enable external interrupt
@@ -145,28 +142,31 @@ void rot_enc_init(void)
 	// Enable pin change interrupt
 	PCICR |= (1 << ENC_PCIE);
 	ENC_INT_MSK |= (1 << ENC_INT_PIN_A) | (1 << ENC_INT_PIN_B);
-
 	// Get initial encoder state
 	enc_last_state = ENC_READ_PIN & ENC_PIN_AB;
+	// align bits
 	enc_last_state = enc_last_state >> 4;
 }
 
 /*************************************************************************
-wait for batttery to be attached.
+wait for battery to be attached.
 minimum voltage to register battery as connected is 0.9 V.
 *************************************************************************/
 int state_0()
 {
 	for (;;)
 	{
-		// power up op-amp buffer to check battery voltage
-		digitalWrite(OPAMP_ENABLE_PIN, HIGH);
+		/*
+		With 0 signal applied to the op-amp the FET still turns on slightly.
+		To keep FET off, op-amp is powered down during idle state.
+		*/
+		digitalWrite(OPAMP_ENABLE_PIN, LOW);
 		delay(1);
+		
 		// sample voltage on battery connection
 		volts = adc_read(V_SNS_PIN);
 		
-		
-		// if battery voltage within acceptable limit go on to next state
+		// if battery voltage is within acceptable limit go on to next state
 		if (volts >= 0.9)
 		{
 			lcd.clear();
@@ -174,54 +174,39 @@ int state_0()
 			lcd.print("Batt V: ");
 			lcd.setCursor(8, 0);
 			lcd.print(volts);
-
 			delay(1000);
+			
 			return 1;
 		}
 		// otherwise wait and check again
 		else
 		{
-			//power down op-amp buffer
-			digitalWrite(OPAMP_ENABLE_PIN, LOW);
-			
 			lcd.clear();
 			lcd.setCursor(0, 0);
 			lcd.print("No battery.");
 		}
-
 		delay(1000);
 	}
 }
 
 /*************************************************************************
-set up battery parameters
+set up battery pack parameters
 *************************************************************************/
 int state_1()
 {
-	selection(2);
 	/*
-	int temp;
-	//to do - implement UI
-	testPW = discharge_current;
-	temp = selection(testPW);
-	// select battery chemistry
-	uint8_t batt_type = 2;
-
-	// select number of cells in a pack
-	uint8_t num_of_cells = 1;
-
-	//select desired discharge current in milliamps
-	//testPW = discharge_current;
-	//temp = selection(testPW, 3);
-	double discharge_current = temp;
-	discharge_current = discharge_current / 1000.0;
-
-	// calculate end of discharge battery voltage
-	batt_min_v = min_cell_v[batt_type] * num_of_cells;
-	// calculate PWM timer compare value
-	batt_disch_i = (discharge_current * PWM_RES) / V_SUP;
+	To calculate discharge cutoff voltage we need to determine
+	battery chemistry and number of cells connected in series.
 	*/
-	return 3;
+	batt_min_v = select_battery() * set_num_of_cells();
+	
+	/*
+	Battery discharge current is set by reference signal from PWM
+	low pass filtered in hardware to obtain analog value.
+	*/
+	batt_disch_i = (set_discharge_current() * PWM_RES) / V_SUP;
+	
+	return 2;
 }
 
 /*************************************************************************
@@ -242,24 +227,29 @@ int state_2()
 	lcd_discharge_labels();
 	previous_time = millis();
 
-	//enable op-amp
+	// power up op-amp buffer
 	digitalWrite(OPAMP_ENABLE_PIN, HIGH);
 	delay(1);
 
 	// turn on MOSFET
 	MOSFET_PWM = (V_SET_PIN, batt_disch_i);
-	volts = 3.0;
-
+	delay(1);
+	
+	// run until low voltage limit is reached
 	while (volts > batt_min_v)
 	{
 		if ((previous_time + interval) <= millis())
 		{
 			previous_time += interval;
+			// keep track of elapsed time (not using this right now)
 			seconds++;
-
+			
+			// voltage will go down over time
 			volts = adc_read(V_SNS_PIN);
+			// current should remain constant
 			amps = adc_read(I_SNS_PIN);
-
+			
+			// running total of energy delivered by the battery under test
 			watt_hour = watt_hour + (volts * amps) / 3600;
 			millamp_hour = millamp_hour + (amps * 1000.0) / 3600;
 
@@ -269,7 +259,7 @@ int state_2()
 
 	// turn off MOSFET
 	MOSFET_PWM = (V_SET_PIN, 0);
-	//disable op-amp
+	// power down op-amp
 	digitalWrite(OPAMP_ENABLE_PIN, LOW);
 
 	return 3;
@@ -291,7 +281,6 @@ double adc_read(int pin)
 	double temp;
 
 	temp = analogRead(pin);
-	//Serial.println(temp);
 	temp = (temp * V_REF) / ADC_RES;
 
 	return temp;
@@ -312,11 +301,8 @@ void lcd_discharge_update()
 {
 	lcd.setCursor(4, 0);
 	lcd.print(volts);
-	//Serial.print(volts);
-	//Serial.print("	");
 	lcd.setCursor(12, 0);
 	lcd.print(amps);
-	//Serial.println(amps, 4);
 	lcd.setCursor(4, 1);
 	lcd.print(watt_hour);
 	lcd.setCursor(10, 1);
@@ -349,68 +335,133 @@ void lcd_clear_line(int line)
 {
 	lcd.setCursor(0, line);
 	lcd.print("                ");
-
 }
 
-void lcd_print_string(String arr)
+float select_battery()
 {
-	//int num = sizeof arr;
-	Serial.println(arr);
-}
-
-// work in progress
-int selection(int prompt)
-//int selection(int *point)
-{
-	int option_list;
-	//String options;
+	String batt_types[] = { "NiMh", "Lead Acid", "Li-ion" };
+	float min_cell_v[] = {   0.9,    1.95,        2.8 };
+	int8_t temp = 2;
+		
 	lcd.clear();
 	lcd.setCursor(0, 0);
+	lcd.print("Battery Type.");
 	
-	switch (prompt)
-	{
-	case 1:
-		lcd.print("Battery Type.");
-		// loop will run until button press is detected
-		while ((flags & ENC_BUTTON_PRESSED) == 0)
-		{
-			// check if rotary encoder has moved
-			if (flags & ENC_POS_CHANGE)
-			{
-				Serial.println(enc_count);  // test message
-				lcd_clear_line(1);
-				lcd.setCursor(0, 1);
-				//lcd.print(point[enc_count]); // prints array element
-				flags &= ~ENC_POS_CHANGE;  // clear flag
-			}
-		}
-		break;
-	case 2:
-		lcd.print("Number of cells.");
-		
-		break;
-	case 3:
-		lcd.print("Select current.");
-		break;
-	}
-	
+	// set flag to force conditional check and print default vale
+	flags |= ENC_POS_CHANGE;
 	// loop will run until button press is detected
 	while ((flags & ENC_BUTTON_PRESSED) == 0)
 	{
 		// check if rotary encoder has moved
 		if (flags & ENC_POS_CHANGE)
 		{
-			Serial.println(enc_count);  // test message
+			// move through an array in a circle
+			if(flags & ENC_UP)
+			{
+				temp++;
+				if(temp > 2) temp = 0;
+				flags &= ~ENC_UP;
+			}
+			if(flags & ENC_DOWN)
+			{
+				temp--;
+				if(temp < 0) temp = 2;
+				flags &= ~ENC_DOWN;
+			}
+			
 			lcd_clear_line(1);
 			lcd.setCursor(0, 1);
-			//lcd.print(point[enc_count]); // prints array element
+			lcd.print(batt_types[temp]); // prints array element
+			
 			flags &= ~ENC_POS_CHANGE;  // clear flag
+			
 		}
+		PCICR |= (1 << ENC_PCIE); // Re-enable interrupt
 	}
-	//return point[enc_count];
+	flags &= ~ENC_BUTTON_PRESSED;
 	
+	return min_cell_v[temp];
 }
 
+int set_num_of_cells()
+{
+	uint8_t temp = 0;
+	
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print("Number of cells.");
+	
+	while ((flags & ENC_BUTTON_PRESSED) == 0)
+	{
+		// check if rotary encoder has moved
+		if (flags & ENC_POS_CHANGE)
+		{
+			if(flags & ENC_UP)
+			{
+				temp++;
+				flags &= ~ENC_UP;
+			}
+			if(flags & ENC_DOWN)
+			{
+				temp--;
+				if(temp < 0) temp = 0;
+				flags &= ~ENC_DOWN;
+			}
+			
+			lcd_clear_line(1);
+			lcd.setCursor(0, 1);
+			lcd.print(temp);
+			flags &= ~ENC_POS_CHANGE;  // clear flag
+		}
+		PCICR |= (1 << ENC_PCIE); // Re-enable interrupt
+	}
+	flags &= ~ENC_BUTTON_PRESSED;
+	
+	return temp;
+}
+
+float set_discharge_current()
+{
+	int discharge_current[] = { 100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000 };
+	int8_t temp = 0;
+		
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print("Select current.");
+
+	// loop will run until button press is detected
+	while ((flags & ENC_BUTTON_PRESSED) == 0)
+	{
+		// check if rotary encoder has moved
+		if (flags & ENC_POS_CHANGE)
+		{
+			// move through an array in a circle
+			if(flags & ENC_UP)
+			{
+				temp++;
+				if(temp > (sizeof(discharge_current)/2)-1) temp = 0;
+				flags &= ~ENC_UP;
+			}
+			if(flags & ENC_DOWN)
+			{
+				temp--;
+				if(temp < 0) temp = (sizeof(discharge_current)/2)-1;
+				flags &= ~ENC_DOWN;
+			}
+			
+			lcd_clear_line(1);
+			lcd.setCursor(0, 1);
+			lcd.print(discharge_current[temp]); // prints array element
+			
+			flags &= ~ENC_POS_CHANGE;  // clear flag
+			
+		}
+		PCICR |= (1 << ENC_PCIE); // Re-enable interrupt
+	}
+	flags &= ~ENC_BUTTON_PRESSED;
+	
+	return discharge_current[temp] / 1000.0;
+}
 /* Interrupt routine triggered by button press */
 ISR(INT0_vect)
 {
@@ -437,14 +488,18 @@ ISR(ENC_INT_VECT)
 		enc_last_state = temp;
 
 		// Check if encoder state is valid and update variables
-		if (/*enc_current_state == 0b00001101 || enc_current_state == 0b00000100 ||*/ enc_current_state == 0b00000010 /*|| enc_current_state == 0b00001011*/)
+		//  0b00001101  0b00000100  0b00000010  0b00001011
+		if (enc_current_state == 0b00000010)
 		{
-			enc_count++;
+			//enc_count--;
+			flags |= ENC_DOWN;
 			flags |= ENC_POS_CHANGE; // set change flag
 		}
-		if (/*enc_current_state == 0b00001110 || enc_current_state == 0b00001000 ||*/ enc_current_state == 0b00000001 /*|| enc_current_state == 0b00000111*/)
+		// 0b00001110  0b00001000  0b00000001  0b00000111
+		if (enc_current_state == 0b00001110)
 		{
-			enc_count--;
+			//enc_count++;
+			flags |= ENC_UP;
 			flags |= ENC_POS_CHANGE; // set change flag
 		}
 	}
