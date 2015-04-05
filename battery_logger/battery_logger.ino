@@ -5,7 +5,6 @@
  * Author: Peter
  */ 
 #include <Wire.h>
-//#include <LiquidCrystal_SPI/Adafruit_MCP23008.h>
 #include <LiquidCrystal_SPI/LiquidCrystal.h>
 #include <stdio.h>
 #include <avr/io.h>
@@ -73,7 +72,6 @@ int state_0();
 int state_1();
 int state_2();
 int state_3();
-void lcd_print_string(char);
 
 // Connect via SPI. Data pin is #11, Clock is #13 and Latch is #10
 LiquidCrystal lcd(11, 13, 10);
@@ -86,7 +84,10 @@ int main(int argc, char** argv)
 	// enable global interrupts
 	sei();
 
-	// set up state machine
+	/*
+	My "state machine" is an array of function names.
+	Functions returns integer value which is an array index containing next function.
+	*/
 	int(*state_machine[7])();
 
 	state_machine[0] = state_0;
@@ -135,7 +136,7 @@ void setup()
 	TCCR1B = 0x9;
 
 	// set up rotary encoder
-	// Set interrupt sense control to rising edge
+	// set interrupt sense control to rising edge
 	EICRA |= (1 << ISC01) | (1 << ISC00);
 	// Enable external interrupt
 	EIMSK |= (1 << INT0);

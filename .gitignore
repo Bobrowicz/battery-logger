@@ -1,0 +1,28 @@
+battery_logger/Debug/abi.cpp.d
+battery_logger/Debug/battery_logger.cpp.d
+battery_logger/Debug/battery_logger.cpp.o
+battery_logger/Debug/battery_logger.elf
+battery_logger/Debug/abi.cpp.o
+battery_logger/Debug/CDC.cpp.o
+battery_logger/Debug/battery_logger.eep
+battery_logger/Debug/main.cpp.d
+battery_logger/Debug/new.cpp.d
+*.o
+*.d
+*.bak
+*.kicad_pcb-bak
+battery_logger/Debug/battery_logger.hex
+*.a
+battery_logger/Visual Micro/.battery_logger.vsarduino.h
+battery_logger/Visual Micro/Compile.vmps.xml
+*.xml
+*.schPreview
+__Previews/battery logger.netPreview
+_autosave-battery logger.pro
+*.bak
+battery_logger/Visual Micro/Configuration.Debug.vmps.xml
+battery_logger/Visual Micro/.battery_logger.vsarduino.h
+uController.bak
+battery_logger/Visual Micro/.battery_logger.vsarduino.h
+battery_logger/Visual Micro/Compile.vmps.xml
+uController.bak
