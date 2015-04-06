@@ -13,8 +13,8 @@
 #include <util/delay.h>
 
 /*
-** constants/macros
-*/
+ * constants/macros
+ */
 #define ENC_POS_CHANGE 0x01
 #define ENC_BUTTON_PRESSED 0x02
 #define ENC_UP 0x04
@@ -35,7 +35,7 @@
 #define ENC_INT_PIN_B PCINT20
 #define V_SNS_PIN A3
 #define I_SNS_PIN A4
-#define V_SET_PIN 9
+#define I_SET_PIN 9
 #define OPAMP_ENABLE_PIN 3
 #define V_REF 4.99
 #define V_SUP 4.99
@@ -44,8 +44,8 @@
 #define MOSFET_PWM OCR1A
 
 /*
-** global variables
-*/
+ * global variables
+ */
 volatile uint8_t enc_current_state;
 volatile uint8_t enc_last_state;
 volatile uint8_t enc_count = 0;
@@ -55,8 +55,8 @@ float batt_min_v;
 double volts, amps, watt_hour, millamp_hour;
 
 /*
-** function prototypes
-*/
+ * function prototypes
+ */
 void setup(void);
 void lcd_discharge_labels(void);
 void lcd_discharge_update(void);
@@ -73,21 +73,21 @@ int state_1();
 int state_2();
 int state_3();
 
-// Connect via SPI. Data pin is #11, Clock is #13 and Latch is #10
+/*
+ * Connect LCD via SPI. Data pin is #11, Clock is #13 and Latch is #10
+ */
 LiquidCrystal lcd(11, 13, 10);
 
 int main(int argc, char** argv)
 {
-	init();
-	// uC setup
-	setup();
-	// enable global interrupts
-	sei();
+	init();	
+	setup();	// uC setup
+	sei();	// enable global interrupts
 
 	/*
-	My "state machine" is an array of function names.
-	Functions returns integer value which is an array index containing next function.
-	*/
+	 * My "state machine" is an array of function names.
+	 * Functions returns integer value which is an array index containing next function.
+	 */
 	int(*state_machine[7])();
 
 	state_machine[0] = state_0;
@@ -116,37 +116,46 @@ u_controller setup function
 *************************************************************************/
 void setup()
 {
-	//analogReference(EXTERNAL);
-
-	// set up the LCD's number of columns and rows:
+	/*
+	 * Set up the LCD's number of columns and rows.
+	 */
 	lcd.begin(16, 2);
 	lcd.setBacklight(HIGH);
 	
-	// i/o
+	/*
+	 * Set up I/O.
+	 */
 	pinMode(ENC_PIN_A, INPUT);
 	pinMode(ENC_PIN_B, INPUT);
 	pinMode(ENC_PIN_BUTTON, INPUT);
 	pinMode(V_SNS_PIN, INPUT);
 	pinMode(I_SNS_PIN, INPUT);
-	pinMode(V_SET_PIN, OUTPUT);
+	pinMode(I_SET_PIN, OUTPUT);
 	pinMode(OPAMP_ENABLE_PIN, OUTPUT);
 
-	// fast pwm timer1
-	TCCR1A = 0x83;
-	TCCR1B = 0x9;
+	/*
+	 * Set up Fast PWM on Timer1.
+	 * To generate smoother analog signal PWM frequency is increased to 15 kHz.
+	 */
+	TCCR1A = 0;	// clear Arduino values
+	TCCR1B = 0;	// clear Arduino values
+	TCCR1A |= (1 << COM1A1);	// OC1A Non-inverting mode
+	TCCR1A |= (1 << WGM11) | (1 << WGM10);	// Fast PWM 10-bit
+	TCCR1B |= (1 << WGM12);	// Fast PWM 10-bit
+	TCCR1B |= (1 << CS10);	// No prescaling
 
 	// set up rotary encoder
-	// set interrupt sense control to rising edge
-	EICRA |= (1 << ISC01) | (1 << ISC00);
-	// Enable external interrupt
-	EIMSK |= (1 << INT0);
-	// Enable pin change interrupt
-	PCICR |= (1 << ENC_PCIE);
+	
+	EICRA |= (1 << ISC01) | (1 << ISC00);	// set interrupt sense control to rising edge
+	
+	EIMSK |= (1 << INT0);	// Enable external interrupt
+	
+	PCICR |= (1 << ENC_PCIE);	// Enable pin change interrupt
 	ENC_INT_MSK |= (1 << ENC_INT_PIN_A) | (1 << ENC_INT_PIN_B);
-	// Get initial encoder state
-	enc_last_state = ENC_READ_PIN & ENC_PIN_AB;
-	// align bits
-	enc_last_state = enc_last_state >> 4;
+	
+	enc_last_state = ENC_READ_PIN & ENC_PIN_AB;	// Get initial encoder state
+	
+	enc_last_state = enc_last_state >> 4;	// align bits
 }
 
 /*************************************************************************
@@ -158,9 +167,9 @@ int state_0()
 	for (;;)
 	{
 		/*
-		With 0 signal applied to the op-amp the FET still turns on slightly.
-		To keep FET off, op-amp is powered down during idle state.
-		*/
+		 *With 0 signal applied to the op-amp the FET still turns on slightly.
+		 *To keep FET off, op-amp is powered down during idle state.
+		 */
 		digitalWrite(OPAMP_ENABLE_PIN, LOW);
 		delay(1);
 		
@@ -219,7 +228,7 @@ int state_2()
 	// polling timer variables
 	uint16_t seconds = 0;
 	uint32_t previous_time;
-	uint32_t interval = 1000;
+	uint32_t interval = 1000; // milliseconds
 
 	// reset counters
 	watt_hour = 0;
@@ -233,7 +242,8 @@ int state_2()
 	delay(1);
 
 	// turn on MOSFET
-	MOSFET_PWM = (V_SET_PIN, batt_disch_i);
+	//MOSFET_PWM = (I_SET_PIN, batt_disch_i);
+	MOSFET_PWM = batt_disch_i;	// PWM duty cycle
 	delay(1);
 	
 	// run until low voltage limit is reached
@@ -242,8 +252,8 @@ int state_2()
 		if ((previous_time + interval) <= millis())
 		{
 			previous_time += interval;
-			// keep track of elapsed time (not using this right now)
-			seconds++;
+			
+			seconds++;	// keep track of elapsed time (not using this right now)
 			
 			// voltage will go down over time
 			volts = adc_read(V_SNS_PIN);
@@ -259,7 +269,8 @@ int state_2()
 	}
 
 	// turn off MOSFET
-	MOSFET_PWM = (V_SET_PIN, 0);
+	//MOSFET_PWM = (I_SET_PIN, 0);
+	MOSFET_PWM = 0;
 	// power down op-amp
 	digitalWrite(OPAMP_ENABLE_PIN, LOW);
 
@@ -386,11 +397,14 @@ float select_battery()
 
 int set_num_of_cells()
 {
-	uint8_t temp = 0;
+	uint8_t temp = 1;
 	
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd.print("Number of cells.");
+	
+	// set flag to force conditional check and print default vale
+	flags |= ENC_POS_CHANGE;
 	
 	while ((flags & ENC_BUTTON_PRESSED) == 0)
 	{
@@ -424,11 +438,14 @@ int set_num_of_cells()
 float set_discharge_current()
 {
 	int discharge_current[] = { 100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000 };
-	int8_t temp = 0;
+	int8_t temp = 1;
 		
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd.print("Select current.");
+	
+	// set flag to force conditional check and print default vale
+	flags |= ENC_POS_CHANGE;
 
 	// loop will run until button press is detected
 	while ((flags & ENC_BUTTON_PRESSED) == 0)
