@@ -72,6 +72,7 @@ int state_0();
 int state_1();
 int state_2();
 int state_3();
+int state_4();
 
 /*
  * Connect LCD via SPI. Data pin is #11, Clock is #13 and Latch is #10
@@ -90,15 +91,24 @@ int main(int argc, char** argv)
 	 */
 	int(*state_machine[7])();
 
-	state_machine[0] = state_0;
-	state_machine[1] = state_1;
-	state_machine[2] = state_2;
-	state_machine[3] = state_3;
+	state_machine[0] = state_0;	// Idle
+	state_machine[1] = state_1;	// Battery setup
+	state_machine[2] = state_2; // Discharge and measure
+	state_machine[3] = state_3;	// Discharge complete
 	//state_machine[4] = state_4;
 	//state_machine[5] = state_5;
-	//state_machine[6] = state_6;
+	state_machine[6] = state_6; // Calibration
 
 	int current_state = 0;
+	
+	/*
+	 * To enter calibration mode the rotary encoder switch must be depressed during uC reset.
+	 */
+	if(digitalRead(ENC_PIN_BUTTON) == 1)
+	{
+		delay(500);
+		if(digitalRead(ENC_PIN_BUTTON) == 1) {current_state = 6;} // Verify that switch is still depressed.
+	}
 
 	for (;;)
 	{
@@ -145,16 +155,11 @@ void setup()
 	TCCR1B |= (1 << CS10);	// No prescaling
 
 	// set up rotary encoder
-	
 	EICRA |= (1 << ISC01) | (1 << ISC00);	// set interrupt sense control to rising edge
-	
 	EIMSK |= (1 << INT0);	// Enable external interrupt
-	
 	PCICR |= (1 << ENC_PCIE);	// Enable pin change interrupt
 	ENC_INT_MSK |= (1 << ENC_INT_PIN_A) | (1 << ENC_INT_PIN_B);
-	
 	enc_last_state = ENC_READ_PIN & ENC_PIN_AB;	// Get initial encoder state
-	
 	enc_last_state = enc_last_state >> 4;	// align bits
 }
 
@@ -288,6 +293,17 @@ int state_3()
 	}
 }
 
+int state_6()
+{
+	for (;;)
+	{
+		lcd.clear();
+		lcd.setCursor(0, 0);
+		lcd.print("Calibrate.");
+		delay(1000);
+	}
+}
+
 double adc_read(int pin)
 {
 	double temp;
@@ -298,56 +314,7 @@ double adc_read(int pin)
 	return temp;
 }
 
-void lcd_discharge_labels()
-{
-	lcd.clear();
-	lcd.print("V: ");
-	lcd.setCursor(9, 0);
-	lcd.print("A: ");
-	lcd.setCursor(0, 1);
-	lcd.print("Wh: ");
 
-}
-
-void lcd_discharge_update()
-{
-	lcd.setCursor(4, 0);
-	lcd.print(volts);
-	lcd.setCursor(12, 0);
-	lcd.print(amps);
-	lcd.setCursor(4, 1);
-	lcd.print(watt_hour);
-	lcd.setCursor(10, 1);
-	lcd.print(millamp_hour);
-}
-
-void lcd_complete_message()
-{
-	lcd.clear();
-	lcd.setCursor(0, 0);
-	lcd.print("Discharge");
-	lcd.setCursor(0, 1);
-	lcd.print("Completed");
-}
-
-void lcd_complete_summary()
-{
-	lcd.clear();
-	lcd.setCursor(0, 0);
-	lcd.print("Wh: ");
-	lcd.setCursor(5, 0);
-	lcd.print(watt_hour);
-	lcd.setCursor(0, 1);
-	lcd.print("mAh: ");
-	lcd.setCursor(5, 1);
-	lcd.print(millamp_hour);
-}
-
-void lcd_clear_line(int line)
-{
-	lcd.setCursor(0, line);
-	lcd.print("                ");
-}
 
 float select_battery()
 {
@@ -453,6 +420,7 @@ float set_discharge_current()
 		// check if rotary encoder has moved
 		if (flags & ENC_POS_CHANGE)
 		{
+			/*
 			// move through an array in a circle
 			if(flags & ENC_UP)
 			{
@@ -466,6 +434,10 @@ float set_discharge_current()
 				if(temp < 0) temp = (sizeof(discharge_current)/2)-1;
 				flags &= ~ENC_DOWN;
 			}
+			*/
+			temp += enc_count;
+			if(temp > (sizeof(discharge_current)/2)-1) temp = 0;
+			if(temp < 0) temp = (sizeof(discharge_current)/2)-1;
 			
 			lcd_clear_line(1);
 			lcd.setCursor(0, 1);
@@ -480,6 +452,58 @@ float set_discharge_current()
 	
 	return discharge_current[temp] / 1000.0;
 }
+
+void lcd_discharge_labels()
+{
+	lcd.clear();
+	lcd.print("V: ");
+	lcd.setCursor(9, 0);
+	lcd.print("A: ");
+	lcd.setCursor(0, 1);
+	lcd.print("Wh: ");
+
+}
+
+void lcd_discharge_update()
+{
+	lcd.setCursor(4, 0);
+	lcd.print(volts);
+	lcd.setCursor(12, 0);
+	lcd.print(amps);
+	lcd.setCursor(4, 1);
+	lcd.print(watt_hour);
+	lcd.setCursor(10, 1);
+	lcd.print(millamp_hour);
+}
+
+void lcd_complete_message()
+{
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print("Discharge");
+	lcd.setCursor(0, 1);
+	lcd.print("Completed");
+}
+
+void lcd_complete_summary()
+{
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print("Wh: ");
+	lcd.setCursor(5, 0);
+	lcd.print(watt_hour);
+	lcd.setCursor(0, 1);
+	lcd.print("mAh: ");
+	lcd.setCursor(5, 1);
+	lcd.print(millamp_hour);
+}
+
+void lcd_clear_line(int line)
+{
+	lcd.setCursor(0, line);
+	lcd.print("                ");
+}
+
 /* Interrupt routine triggered by button press */
 ISR(INT0_vect)
 {
@@ -509,14 +533,14 @@ ISR(ENC_INT_VECT)
 		//  0b00001101  0b00000100  0b00000010  0b00001011
 		if (enc_current_state == 0b00000010)
 		{
-			//enc_count--;
+			enc_count = -1;
 			flags |= ENC_DOWN;
 			flags |= ENC_POS_CHANGE; // set change flag
 		}
 		// 0b00001110  0b00001000  0b00000001  0b00000111
 		if (enc_current_state == 0b00001110)
 		{
-			//enc_count++;
+			enc_count = 1;
 			flags |= ENC_UP;
 			flags |= ENC_POS_CHANGE; // set change flag
 		}
