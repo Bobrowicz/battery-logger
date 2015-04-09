@@ -41,7 +41,7 @@
 #define V_SUP 4.99
 #define ADC_RES 1024
 #define PWM_RES 1024
-#define MOSFET_PWM OCR1A
+#define I_SET_PWM OCR1A
 
 /*
  * global variables
@@ -234,16 +234,19 @@ int state_2()
 	watt_hour = 0;
 	millamp_hour = 0;
 
-	lcd_discharge_labels();
+	lcd_discharge_labels();	// Print static elements
 	previous_time = millis();
 
-	// power up op-amp buffer
-	digitalWrite(OPAMP_ENABLE_PIN, HIGH);
+	
+	digitalWrite(OPAMP_ENABLE_PIN, HIGH);	// power up op-amp to enable MOSFET
 	delay(1);
 
-	// turn on MOSFET
-	//MOSFET_PWM = (I_SET_PIN, batt_disch_i);
-	MOSFET_PWM = batt_disch_i;	// PWM duty cycle
+	/*
+	 * Discharge current is proportional to set point voltage in 1V to 1A ratio.
+	 * Current is controlled by adjusting PWM duty cycle to obtain desired average voltage, 
+	 * then low pass filtering resultant square wave to produce analog signal.
+	 */
+	I_SET_PWM = batt_disch_i;	// Set PWM duty cycle
 	delay(1);
 	
 	// run until low voltage limit is reached
@@ -268,11 +271,8 @@ int state_2()
 		}
 	}
 
-	// turn off MOSFET
-	//MOSFET_PWM = (I_SET_PIN, 0);
-	MOSFET_PWM = 0;
-	// power down op-amp
-	digitalWrite(OPAMP_ENABLE_PIN, LOW);
+	I_SET_PWM = 0;	// Set current to minimum.
+	digitalWrite(OPAMP_ENABLE_PIN, LOW);	// power down op-amp to completely turn off MOSFET
 
 	return 3;
 }
