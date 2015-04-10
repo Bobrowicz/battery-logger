@@ -320,44 +320,35 @@ float select_battery()
 {
 	String batt_types[] = { "NiMh", "Lead Acid", "Li-ion" };
 	float min_cell_v[] = {   0.9,    1.95,        2.8 };
+	uint8_t arr_elem_count = sizeof(min_cell_v)/sizeof(float);
 	int8_t temp = 2;
 		
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd.print("Battery Type.");
 	
-	// set flag to force conditional check and print default vale
-	flags |= ENC_POS_CHANGE;
+	flags |= ENC_POS_CHANGE;	// set flag to force conditional check and print default vale
+	
 	// loop will run until button press is detected
 	while ((flags & ENC_BUTTON_PRESSED) == 0)
 	{
 		// check if rotary encoder has moved
 		if (flags & ENC_POS_CHANGE)
 		{
-			// move through an array in a circle
-			if(flags & ENC_UP)
-			{
-				temp++;
-				if(temp > 2) temp = 0;
-				flags &= ~ENC_UP;
-			}
-			if(flags & ENC_DOWN)
-			{
-				temp--;
-				if(temp < 0) temp = 2;
-				flags &= ~ENC_DOWN;
-			}
+			temp += enc_count;
+			// moving through the array in a circle
+			if(temp > arr_elem_count-1) temp = 0;
+			if(temp < 0) temp = arr_elem_count-1;
 			
 			lcd_clear_line(1);
 			lcd.setCursor(0, 1);
 			lcd.print(batt_types[temp]); // prints array element
 			
-			flags &= ~ENC_POS_CHANGE;  // clear flag
-			
+			flags &= ~ENC_POS_CHANGE;  // clear flag		
 		}
 		PCICR |= (1 << ENC_PCIE); // Re-enable interrupt
 	}
-	flags &= ~ENC_BUTTON_PRESSED;
+	flags &= ~ENC_BUTTON_PRESSED;	// clear flag
 	
 	return min_cell_v[temp];
 }
@@ -370,34 +361,25 @@ int set_num_of_cells()
 	lcd.setCursor(0, 0);
 	lcd.print("Number of cells.");
 	
-	// set flag to force conditional check and print default vale
-	flags |= ENC_POS_CHANGE;
+	flags |= ENC_POS_CHANGE;	// set flag to force conditional check and print default vale
 	
 	while ((flags & ENC_BUTTON_PRESSED) == 0)
 	{
 		// check if rotary encoder has moved
 		if (flags & ENC_POS_CHANGE)
 		{
-			if(flags & ENC_UP)
-			{
-				temp++;
-				flags &= ~ENC_UP;
-			}
-			if(flags & ENC_DOWN)
-			{
-				temp--;
-				if(temp < 0) temp = 0;
-				flags &= ~ENC_DOWN;
-			}
+			temp += enc_count;
+			if(temp < 0) temp = 0;
 			
 			lcd_clear_line(1);
 			lcd.setCursor(0, 1);
 			lcd.print(temp);
+			
 			flags &= ~ENC_POS_CHANGE;  // clear flag
 		}
 		PCICR |= (1 << ENC_PCIE); // Re-enable interrupt
 	}
-	flags &= ~ENC_BUTTON_PRESSED;
+	flags &= ~ENC_BUTTON_PRESSED;	// clear flag
 	
 	return temp;
 }
@@ -405,14 +387,15 @@ int set_num_of_cells()
 float set_discharge_current()
 {
 	int discharge_current[] = { 100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000 };
+	uint8_t arr_elem_count = sizeof(discharge_current)/sizeof(int);
 	int8_t temp = 1;
 		
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd.print("Select current.");
 	
-	// set flag to force conditional check and print default vale
-	flags |= ENC_POS_CHANGE;
+	
+	flags |= ENC_POS_CHANGE;	// set flag to force conditional check and print default vale
 
 	// loop will run until button press is detected
 	while ((flags & ENC_BUTTON_PRESSED) == 0)
@@ -420,24 +403,10 @@ float set_discharge_current()
 		// check if rotary encoder has moved
 		if (flags & ENC_POS_CHANGE)
 		{
-			/*
-			// move through an array in a circle
-			if(flags & ENC_UP)
-			{
-				temp++;
-				if(temp > (sizeof(discharge_current)/2)-1) temp = 0;
-				flags &= ~ENC_UP;
-			}
-			if(flags & ENC_DOWN)
-			{
-				temp--;
-				if(temp < 0) temp = (sizeof(discharge_current)/2)-1;
-				flags &= ~ENC_DOWN;
-			}
-			*/
+			// moving through the array in a circle
 			temp += enc_count;
-			if(temp > (sizeof(discharge_current)/2)-1) temp = 0;
-			if(temp < 0) temp = (sizeof(discharge_current)/2)-1;
+			if(temp > arr_elem_count-1) temp = 0;
+			if(temp < 0) temp = arr_elem_count-1;
 			
 			lcd_clear_line(1);
 			lcd.setCursor(0, 1);
@@ -448,7 +417,7 @@ float set_discharge_current()
 		}
 		PCICR |= (1 << ENC_PCIE); // Re-enable interrupt
 	}
-	flags &= ~ENC_BUTTON_PRESSED;
+	flags &= ~ENC_BUTTON_PRESSED;	// clear flag
 	
 	return discharge_current[temp] / 1000.0;
 }
@@ -534,14 +503,14 @@ ISR(ENC_INT_VECT)
 		if (enc_current_state == 0b00000010)
 		{
 			enc_count = -1;
-			flags |= ENC_DOWN;
+			//flags |= ENC_DOWN;
 			flags |= ENC_POS_CHANGE; // set change flag
 		}
 		// 0b00001110  0b00001000  0b00000001  0b00000111
 		if (enc_current_state == 0b00001110)
 		{
 			enc_count = 1;
-			flags |= ENC_UP;
+			//flags |= ENC_UP;
 			flags |= ENC_POS_CHANGE; // set change flag
 		}
 	}
