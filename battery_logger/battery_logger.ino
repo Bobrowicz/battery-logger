@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <avr/eeprom.h>
+#include <avr/pgmspace.h>
 #define F_CPU 16000000UL
 #include <util/delay.h>
 
@@ -39,6 +41,7 @@
 #define OPAMP_ENABLE_PIN 3
 #define V_REF 4.99
 #define V_SUP 4.99
+#define V_SNS_COEFF 0.00487
 #define ADC_RES 1024
 #define PWM_RES 1024
 #define I_SET_PWM OCR1A
@@ -48,11 +51,14 @@
  */
 volatile uint8_t enc_current_state;
 volatile uint8_t enc_last_state;
-volatile uint8_t enc_count = 0;
+volatile int8_t enc_count = 0;
 volatile char flags;
 int batt_disch_i;
 float batt_min_v;
 double volts, amps, watt_hour, millamp_hour;
+float EEMEM v_sns_coeff;
+float EEMEM i_sns_coeff;
+float EEMEM i_set_coeff;
 
 /*
  * function prototypes
@@ -63,6 +69,7 @@ void lcd_discharge_update(void);
 void lcd_complete_message(void);
 void lcd_complete_summary(void);
 void lcd_clear_line(int);
+void lcd_print_P();
 double adc_read(int);
 float select_battery(void);
 float set_discharge_current(void);
@@ -73,6 +80,8 @@ int state_1();
 int state_2();
 int state_3();
 int state_4();
+void eeprom_read(void);
+void eeprom_write(float, int);
 
 /*
  * Connect LCD via SPI. Data pin is #11, Clock is #13 and Latch is #10
@@ -186,7 +195,7 @@ int state_0()
 		{
 			lcd.clear();
 			lcd.setCursor(0, 0);
-			lcd.print("Batt V: ");
+			lcd_print_P(PSTR("Batt V: "));
 			lcd.setCursor(8, 0);
 			lcd.print(volts);
 			delay(1000);
@@ -198,7 +207,7 @@ int state_0()
 		{
 			lcd.clear();
 			lcd.setCursor(0, 0);
-			lcd.print("No battery.");
+			lcd_print_P(PSTR("No battery."));
 		}
 		delay(1000);
 	}
@@ -295,13 +304,83 @@ int state_3()
 
 int state_6()
 {
-	for (;;)
+	float temp_coeff;
+	uint16_t adc_val = 0;
+	int temp = 400;
+	
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd_print_P(PSTR("Calibration mode"));
+	lcd.setCursor(0, 1);
+	lcd_print_P(PSTR("Press to start"));
+	
+	while ((flags & ENC_BUTTON_PRESSED) == 0)
 	{
-		lcd.clear();
-		lcd.setCursor(0, 0);
-		lcd.print("Calibrate.");
-		delay(1000);
+		;
 	}
+	flags &= ~ENC_BUTTON_PRESSED;	// clear flag
+	
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd_print_P(PSTR("Apply 4.50 V"));
+	lcd.setCursor(0, 1);
+	lcd_print_P(PSTR("Press when rdy"));
+	
+	while ((flags & ENC_BUTTON_PRESSED) == 0)
+	{
+		;
+	}
+	flags &= ~ENC_BUTTON_PRESSED;	// clear flag
+	
+	for(int i = 0; i < 10; i++)
+	{
+		adc_val += analogRead(V_SNS_PIN);
+		delay(10);
+	}
+	adc_val = adc_val / 10;
+	
+	temp_coeff = 4.5/adc_val;
+	
+	eeprom_write(temp_coeff, 0);
+	eeprom_read();
+	/*
+	while ((flags & ENC_BUTTON_PRESSED) == 0)
+	{
+		// check if rotary encoder has moved
+		if (flags & ENC_POS_CHANGE)
+		{
+			temp += enc_count;
+			if(temp < 0) temp = 0;
+			
+			lcd_clear_line(1);
+			lcd.setCursor(5, 1);
+			lcd.print(temp/100.0);
+			
+			flags &= ~ENC_POS_CHANGE;  // clear flag
+		}
+		PCICR |= (1 << ENC_PCIE); // Re-enable interrupt
+	}
+	flags &= ~ENC_BUTTON_PRESSED;	// clear flag
+	*/
+	//delay(20000);
+}
+
+void eeprom_read()
+{
+	float float_num;
+	
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	
+	float_num = eeprom_read_float((float*)0);
+	lcd.print(float_num);
+	
+	delay(10000);
+}
+
+void eeprom_write(float float_num, int addr)
+{
+	eeprom_update_float((float*)addr, float_num);
 }
 
 double adc_read(int pin)
@@ -310,6 +389,7 @@ double adc_read(int pin)
 
 	temp = analogRead(pin);
 	temp = (temp * V_REF) / ADC_RES;
+	//temp = temp * 0.00487;
 
 	return temp;
 }
@@ -325,7 +405,7 @@ float select_battery()
 		
 	lcd.clear();
 	lcd.setCursor(0, 0);
-	lcd.print("Battery Type.");
+	lcd_print_P(PSTR("Battery Type."));
 	
 	flags |= ENC_POS_CHANGE;	// set flag to force conditional check and print default vale
 	
@@ -355,11 +435,11 @@ float select_battery()
 
 int set_num_of_cells()
 {
-	uint8_t temp = 1;
+	int8_t temp = 1;
 	
 	lcd.clear();
 	lcd.setCursor(0, 0);
-	lcd.print("Number of cells.");
+	lcd_print_P(PSTR("Number of cells."));
 	
 	flags |= ENC_POS_CHANGE;	// set flag to force conditional check and print default vale
 	
@@ -369,7 +449,7 @@ int set_num_of_cells()
 		if (flags & ENC_POS_CHANGE)
 		{
 			temp += enc_count;
-			if(temp < 0) temp = 0;
+			if(temp < 1) temp = 1;
 			
 			lcd_clear_line(1);
 			lcd.setCursor(0, 1);
@@ -392,7 +472,7 @@ float set_discharge_current()
 		
 	lcd.clear();
 	lcd.setCursor(0, 0);
-	lcd.print("Select current.");
+	lcd_print_P(PSTR("Select current."));
 	
 	
 	flags |= ENC_POS_CHANGE;	// set flag to force conditional check and print default vale
@@ -425,11 +505,11 @@ float set_discharge_current()
 void lcd_discharge_labels()
 {
 	lcd.clear();
-	lcd.print("V: ");
+	lcd_print_P(PSTR("V: "));
 	lcd.setCursor(9, 0);
-	lcd.print("A: ");
+	lcd_print_P(PSTR("A: "));
 	lcd.setCursor(0, 1);
-	lcd.print("Wh: ");
+	lcd_print_P(PSTR("Wh: "));
 
 }
 
@@ -449,20 +529,20 @@ void lcd_complete_message()
 {
 	lcd.clear();
 	lcd.setCursor(0, 0);
-	lcd.print("Discharge");
+	lcd_print_P(PSTR("Discharge"));
 	lcd.setCursor(0, 1);
-	lcd.print("Completed");
+	lcd_print_P(PSTR("Completed"));
 }
 
 void lcd_complete_summary()
 {
 	lcd.clear();
 	lcd.setCursor(0, 0);
-	lcd.print("Wh: ");
+	lcd_print_P(PSTR("Wh: "));
 	lcd.setCursor(5, 0);
 	lcd.print(watt_hour);
 	lcd.setCursor(0, 1);
-	lcd.print("mAh: ");
+	lcd_print_P(PSTR("mAh: "));
 	lcd.setCursor(5, 1);
 	lcd.print(millamp_hour);
 }
@@ -470,7 +550,14 @@ void lcd_complete_summary()
 void lcd_clear_line(int line)
 {
 	lcd.setCursor(0, line);
-	lcd.print("                ");
+	lcd_print_P(PSTR("                "));
+}
+
+void lcd_print_P(const PROGMEM char *s)
+{
+	uint8_t c;
+	while ((c = pgm_read_byte_near(s++)) != 0)
+	lcd.print((char)c);
 }
 
 /* Interrupt routine triggered by button press */
