@@ -58,7 +58,7 @@ float batt_min_v;
 double volts, amps, watt_hour, millamp_hour;
 float EEMEM v_sns_coeff;
 float EEMEM i_sns_coeff;
-float EEMEM i_set_coeff;
+uint16_t EEMEM i_set_coeff;
 
 /*
  * function prototypes
@@ -80,8 +80,9 @@ int state_1();
 int state_2();
 int state_3();
 int state_4();
-void eeprom_read(void);
+float eeprom_read(int);
 void eeprom_write(float, int);
+void wait_for_button(void);
 
 /*
  * Connect LCD via SPI. Data pin is #11, Clock is #13 and Latch is #10
@@ -178,6 +179,14 @@ minimum voltage to register battery as connected is 0.9 V.
 *************************************************************************/
 int state_0()
 {
+	lcd.clear();
+	lcd.setCursor(0,0);
+	float v_coef = eeprom_read_float(&v_sns_coeff);
+	lcd.print(v_coef*100000);
+	lcd.setCursor(0,1);
+	uint16_t temp = eeprom_read_word(&i_set_coeff);
+	lcd.print(temp);
+	delay(4000);
 	for (;;)
 	{
 		/*
@@ -308,17 +317,16 @@ int state_6()
 	uint16_t adc_val = 0;
 	int temp = 400;
 	
+	digitalWrite(OPAMP_ENABLE_PIN, LOW);	// power down op-amp to completely turn off MOSFET
+	I_SET_PWM = 0;	// Set current to minimum.
+	
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd_print_P(PSTR("Calibration mode"));
 	lcd.setCursor(0, 1);
 	lcd_print_P(PSTR("Press to start"));
 	
-	while ((flags & ENC_BUTTON_PRESSED) == 0)
-	{
-		;
-	}
-	flags &= ~ENC_BUTTON_PRESSED;	// clear flag
+	wait_for_button();
 	
 	lcd.clear();
 	lcd.setCursor(0, 0);
@@ -326,11 +334,7 @@ int state_6()
 	lcd.setCursor(0, 1);
 	lcd_print_P(PSTR("Press when rdy"));
 	
-	while ((flags & ENC_BUTTON_PRESSED) == 0)
-	{
-		;
-	}
-	flags &= ~ENC_BUTTON_PRESSED;	// clear flag
+	wait_for_button();
 	
 	for(int i = 0; i < 10; i++)
 	{
@@ -339,43 +343,102 @@ int state_6()
 	}
 	adc_val = adc_val / 10;
 	
-	temp_coeff = 4.5/adc_val;
+	//temp_coeff = 4.5/adc_val;
+	temp_coeff = 3.8/adc_val;
+	//eeprom_write(temp_coeff, v_sns_coeff);
+	eeprom_update_float(&v_sns_coeff, temp_coeff);
 	
-	eeprom_write(temp_coeff, 0);
-	eeprom_read();
 	/*
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd_print_P(PSTR("Apply 2.0 A"));
+	lcd.setCursor(0, 1);
+	lcd_print_P(PSTR("Press when rdy"));
+	
+	digitalWrite(OPAMP_ENABLE_PIN, HIGH);	// power up op-amp to enable MOSFET
+	I_SET_PWM = 1023;	// Set current to maximum.
+	
+	wait_for_button();
+	
+	for(int i = 0; i < 10; i++)
+	{
+		adc_val += analogRead(I_SNS_PIN);
+		delay(10);
+	}
+	adc_val = adc_val / 10;
+	
+	digitalWrite(OPAMP_ENABLE_PIN, LOW);	// power down op-amp to completely turn off MOSFET
+	I_SET_PWM = 0;	// Set current to minimum.
+	
+	temp_coeff = 2.0/adc_val;
+	
+	eeprom_write(temp_coeff, 4);
+	*/
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd_print_P(PSTR("Current set cal"));
+	lcd.setCursor(0, 1);
+	lcd_print_P(PSTR("Press when rdy"));
+	
+	wait_for_button();
+	
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd_print_P(PSTR("Set I to 1.0 A"));
+	lcd.setCursor(0, 1);
+	
+	digitalWrite(OPAMP_ENABLE_PIN, HIGH);	// power up op-amp to enable MOSFET
+	
+	temp_coeff = 0;
 	while ((flags & ENC_BUTTON_PRESSED) == 0)
 	{
 		// check if rotary encoder has moved
 		if (flags & ENC_POS_CHANGE)
 		{
-			temp += enc_count;
-			if(temp < 0) temp = 0;
+			temp_coeff += enc_count;
+			if(temp_coeff < 0) temp_coeff = 0;
+			
+			I_SET_PWM = (int)temp_coeff;
+			//I_SET_PWM = 250;
 			
 			lcd_clear_line(1);
-			lcd.setCursor(5, 1);
-			lcd.print(temp/100.0);
+			lcd.setCursor(0, 1);
+			lcd.print((int)temp_coeff);
 			
 			flags &= ~ENC_POS_CHANGE;  // clear flag
 		}
 		PCICR |= (1 << ENC_PCIE); // Re-enable interrupt
 	}
 	flags &= ~ENC_BUTTON_PRESSED;	// clear flag
-	*/
-	//delay(20000);
-}
-
-void eeprom_read()
-{
-	float float_num;
+	
+	digitalWrite(OPAMP_ENABLE_PIN, LOW);	// power down op-amp to completely turn off MOSFET
+	
+	eeprom_update_word(&i_set_coeff,(uint16_t)temp_coeff);
 	
 	lcd.clear();
 	lcd.setCursor(0, 0);
+	lcd_print_P(PSTR("Cal complete"));
+	delay(2000);
 	
-	float_num = eeprom_read_float((float*)0);
-	lcd.print(float_num);
+	return 0;
+}
+
+void wait_for_button()
+{
+	while ((flags & ENC_BUTTON_PRESSED) == 0)
+	{
+		;
+	}
+	flags &= ~ENC_BUTTON_PRESSED;	// clear flag
+}
+
+float eeprom_read(int addr)
+{
+	float float_num;
 	
-	delay(10000);
+	float_num = eeprom_read_float((float*)addr);
+	
+	return float_num;
 }
 
 void eeprom_write(float float_num, int addr)
@@ -388,8 +451,8 @@ double adc_read(int pin)
 	double temp;
 
 	temp = analogRead(pin);
-	temp = (temp * V_REF) / ADC_RES;
-	//temp = temp * 0.00487;
+	//temp = (temp * V_REF) / ADC_RES;
+	temp = temp * eeprom_read(12);
 
 	return temp;
 }
