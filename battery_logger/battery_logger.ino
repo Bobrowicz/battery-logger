@@ -74,14 +74,11 @@ double adc_read(int);
 float select_battery(void);
 float set_discharge_current(void);
 int set_num_of_cells(void);
-int selection(int);
 int state_0();
 int state_1();
 int state_2();
 int state_3();
 int state_4();
-float eeprom_read(int);
-void eeprom_write(float, int);
 void wait_for_button(void);
 
 /*
@@ -182,11 +179,17 @@ int state_0()
 	lcd.clear();
 	lcd.setCursor(0,0);
 	float v_coef = eeprom_read_float(&v_sns_coeff);
-	lcd.print(v_coef*100000);
-	lcd.setCursor(0,1);
+	lcd.print(v_coef*1000000);
+	delay(5000);
+	lcd.clear();
+	lcd.setCursor(0,0);
+	float i_coef = eeprom_read_float(&i_sns_coeff);
+	lcd.print(i_coef*1000000);
+	lcd.clear();
+	lcd.setCursor(0,0);
 	uint16_t temp = eeprom_read_word(&i_set_coeff);
 	lcd.print(temp);
-	delay(4000);
+	delay(5000);
 	for (;;)
 	{
 		/*
@@ -315,7 +318,6 @@ int state_6()
 {
 	float temp_coeff;
 	uint16_t adc_val = 0;
-	int temp = 400;
 	
 	digitalWrite(OPAMP_ENABLE_PIN, LOW);	// power down op-amp to completely turn off MOSFET
 	I_SET_PWM = 0;	// Set current to minimum.
@@ -330,9 +332,15 @@ int state_6()
 	
 	lcd.clear();
 	lcd.setCursor(0, 0);
+	lcd_print_P(PSTR("Calibrating"));
+	lcd.setCursor(0, 1);
+	lcd_print_P(PSTR("Voltage Sense"));
+	delay(3000);
+	lcd.clear();
+	lcd.setCursor(0, 0);
 	lcd_print_P(PSTR("Apply 4.50 V"));
 	lcd.setCursor(0, 1);
-	lcd_print_P(PSTR("Press when rdy"));
+	lcd_print_P(PSTR("Press to measure"));
 	
 	wait_for_button();
 	
@@ -343,20 +351,24 @@ int state_6()
 	}
 	adc_val = adc_val / 10;
 	
-	//temp_coeff = 4.5/adc_val;
-	temp_coeff = 3.8/adc_val;
-	//eeprom_write(temp_coeff, v_sns_coeff);
+	temp_coeff = 4.5/adc_val;
+	//temp_coeff = 3.8/adc_val;
 	eeprom_update_float(&v_sns_coeff, temp_coeff);
 	
-	/*
 	lcd.clear();
 	lcd.setCursor(0, 0);
-	lcd_print_P(PSTR("Apply 2.0 A"));
+	lcd_print_P(PSTR("Calibrating"));
 	lcd.setCursor(0, 1);
-	lcd_print_P(PSTR("Press when rdy"));
+	lcd_print_P(PSTR("Current Sense"));
+	delay(3000);
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd_print_P(PSTR("Apply 1.0 A"));
+	lcd.setCursor(0, 1);
+	lcd_print_P(PSTR("Press to measure"));
 	
 	digitalWrite(OPAMP_ENABLE_PIN, HIGH);	// power up op-amp to enable MOSFET
-	I_SET_PWM = 1023;	// Set current to maximum.
+	I_SET_PWM = 1023;	// Turn MOSFET fully ON; current limited by external supply.
 	
 	wait_for_button();
 	
@@ -367,18 +379,20 @@ int state_6()
 	}
 	adc_val = adc_val / 10;
 	
-	digitalWrite(OPAMP_ENABLE_PIN, LOW);	// power down op-amp to completely turn off MOSFET
 	I_SET_PWM = 0;	// Set current to minimum.
 	
-	temp_coeff = 2.0/adc_val;
+	temp_coeff = 1.0/adc_val;
+	eeprom_update_float(&i_sns_coeff, temp_coeff);
 	
-	eeprom_write(temp_coeff, 4);
-	*/
 	lcd.clear();
 	lcd.setCursor(0, 0);
-	lcd_print_P(PSTR("Current set cal"));
+	lcd_print_P(PSTR("Calibrating"));
 	lcd.setCursor(0, 1);
-	lcd_print_P(PSTR("Press when rdy"));
+	lcd_print_P(PSTR("Current flow"));
+	delay(1000);
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd_print_P(PSTR("Press to start"));
 	
 	wait_for_button();
 	
@@ -386,8 +400,7 @@ int state_6()
 	lcd.setCursor(0, 0);
 	lcd_print_P(PSTR("Set I to 1.0 A"));
 	lcd.setCursor(0, 1);
-	
-	digitalWrite(OPAMP_ENABLE_PIN, HIGH);	// power up op-amp to enable MOSFET
+	lcd_print_P(PSTR("Press when done"));
 	
 	temp_coeff = 0;
 	while ((flags & ENC_BUTTON_PRESSED) == 0)
@@ -399,11 +412,6 @@ int state_6()
 			if(temp_coeff < 0) temp_coeff = 0;
 			
 			I_SET_PWM = (int)temp_coeff;
-			//I_SET_PWM = 250;
-			
-			lcd_clear_line(1);
-			lcd.setCursor(0, 1);
-			lcd.print((int)temp_coeff);
 			
 			flags &= ~ENC_POS_CHANGE;  // clear flag
 		}
@@ -432,27 +440,13 @@ void wait_for_button()
 	flags &= ~ENC_BUTTON_PRESSED;	// clear flag
 }
 
-float eeprom_read(int addr)
-{
-	float float_num;
-	
-	float_num = eeprom_read_float((float*)addr);
-	
-	return float_num;
-}
-
-void eeprom_write(float float_num, int addr)
-{
-	eeprom_update_float((float*)addr, float_num);
-}
-
 double adc_read(int pin)
 {
 	double temp;
 
 	temp = analogRead(pin);
 	//temp = (temp * V_REF) / ADC_RES;
-	temp = temp * eeprom_read(12);
+	temp = temp * eeprom_read_float(&v_sns_coeff);
 
 	return temp;
 }
@@ -529,7 +523,7 @@ int set_num_of_cells()
 
 float set_discharge_current()
 {
-	int discharge_current[] = { 100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000 };
+	int discharge_current[] = { 100, 250, 500, 750, 1000, 1500, 2000, 2500 };
 	uint8_t arr_elem_count = sizeof(discharge_current)/sizeof(int);
 	int8_t temp = 1;
 		
