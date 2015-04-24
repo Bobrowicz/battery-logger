@@ -1,3 +1,4 @@
+
 /*
  * battery_logger.ino
  *
@@ -35,13 +36,12 @@
 #define ENC_INT_MSK PCMSK2
 #define ENC_INT_PIN_A PCINT21
 #define ENC_INT_PIN_B PCINT20
-#define V_SNS_PIN A3
+#define V_SNS_1_PIN A2
 #define I_SNS_PIN A4
 #define I_SET_PIN 9
 #define OPAMP_ENABLE_PIN 3
 #define V_REF 4.99
 #define V_SUP 4.99
-#define V_SNS_COEFF 0.00487
 #define ADC_RES 1024
 #define PWM_RES 1024
 #define I_SET_PWM OCR1A
@@ -56,9 +56,10 @@ volatile char flags;
 int batt_disch_i;
 float batt_min_v;
 double volts, amps, watt_hour, millamp_hour;
-float EEMEM v_sns_coeff;
-float EEMEM i_sns_coeff;
-uint16_t EEMEM i_set_coeff;
+uint16_t discharge_current[] = { 100, 250, 500, 750, 1000, 1500, 2000 };
+uint16_t i_set_pwm[] = {          19,  50, 101, 152,  204,  306,  408 };
+float i_sns_coeff = 0.0049720040;
+float v_sns_coeff = 0.009806;
 
 /*
  * function prototypes
@@ -70,16 +71,30 @@ void lcd_complete_message(void);
 void lcd_complete_summary(void);
 void lcd_clear_line(int);
 void lcd_print_P();
-double adc_read(int);
 float select_battery(void);
-float set_discharge_current(void);
+int set_discharge_current(void);
 int set_num_of_cells(void);
 int state_0();
 int state_1();
 int state_2();
 int state_3();
 int state_4();
+int state_6();
 void wait_for_button(void);
+float read_voltage();
+float read_current();
+int verify_calibration_coeeficients();
+
+typedef void *(*StateFunct)();
+
+void *start();
+void *idle();
+void *battery_setup();
+void *discharge();
+void *complete();
+void *fault();
+void *calibrate();
+
 
 /*
  * Connect LCD via SPI. Data pin is #11, Clock is #13 and Latch is #10
@@ -102,7 +117,7 @@ int main(int argc, char** argv)
 	state_machine[1] = state_1;	// Battery setup
 	state_machine[2] = state_2; // Discharge and measure
 	state_machine[3] = state_3;	// Discharge complete
-	//state_machine[4] = state_4;
+	state_machine[4] = state_4;
 	//state_machine[5] = state_5;
 	state_machine[6] = state_6; // Calibration
 
@@ -145,7 +160,7 @@ void setup()
 	pinMode(ENC_PIN_A, INPUT);
 	pinMode(ENC_PIN_B, INPUT);
 	pinMode(ENC_PIN_BUTTON, INPUT);
-	pinMode(V_SNS_PIN, INPUT);
+	pinMode(V_SNS_1_PIN, INPUT);
 	pinMode(I_SNS_PIN, INPUT);
 	pinMode(I_SET_PIN, OUTPUT);
 	pinMode(OPAMP_ENABLE_PIN, OUTPUT);
@@ -168,6 +183,8 @@ void setup()
 	ENC_INT_MSK |= (1 << ENC_INT_PIN_A) | (1 << ENC_INT_PIN_B);
 	enc_last_state = ENC_READ_PIN & ENC_PIN_AB;	// Get initial encoder state
 	enc_last_state = enc_last_state >> 4;	// align bits
+	
+	//v_sns_coeff = eeprom_read_float((float*)eeprom_addr);
 }
 
 /*************************************************************************
@@ -176,31 +193,24 @@ minimum voltage to register battery as connected is 0.9 V.
 *************************************************************************/
 int state_0()
 {
-	lcd.clear();
-	lcd.setCursor(0,0);
-	float v_coef = eeprom_read_float(&v_sns_coeff);
-	lcd.print(v_coef*1000000);
-	delay(5000);
-	lcd.clear();
-	lcd.setCursor(0,0);
-	float i_coef = eeprom_read_float(&i_sns_coeff);
-	lcd.print(i_coef*1000000);
-	lcd.clear();
-	lcd.setCursor(0,0);
-	uint16_t temp = eeprom_read_word(&i_set_coeff);
-	lcd.print(temp);
-	delay(5000);
+	/*
+	 * Check if data stored in eeprom is valid.
+	 * Return value of 0 means that one check failed.
+	 * Return value of 1 means that check passed.
+	 */
+	if(verify_calibration_coeeficients() == 0) return 4;
+		
 	for (;;)
 	{
 		/*
-		 *With 0 signal applied to the op-amp the FET still turns on slightly.
-		 *To keep FET off, op-amp is powered down during idle state.
+		 * With 0 signal applied to the op-amp the FET still turns on slightly.
+		 * To keep FET off, op-amp is powered down during idle state.
 		 */
 		digitalWrite(OPAMP_ENABLE_PIN, LOW);
-		delay(1);
 		
 		// sample voltage on battery connection
-		volts = adc_read(V_SNS_PIN);
+		//volts = analogRead(V_SNS_1_PIN) * v_sns_coeff;
+		volts =  read_voltage();
 		
 		// if battery voltage is within acceptable limit go on to next state
 		if (volts >= 0.9)
@@ -240,7 +250,8 @@ int state_1()
 	Battery discharge current is set by reference signal from PWM
 	low pass filtered in hardware to obtain analog value.
 	*/
-	batt_disch_i = (set_discharge_current() * PWM_RES) / V_SUP;
+	//batt_disch_i = (set_discharge_current() * PWM_RES) / V_SUP;
+	batt_disch_i = set_discharge_current();
 	
 	return 2;
 }
@@ -285,9 +296,10 @@ int state_2()
 			seconds++;	// keep track of elapsed time (not using this right now)
 			
 			// voltage will go down over time
-			volts = adc_read(V_SNS_PIN);
+			//volts = adc_read(V_SNS_1_PIN) * v_sns_coeff;
+			volts = read_voltage();
 			// current should remain constant
-			amps = adc_read(I_SNS_PIN);
+			amps = read_current();
 			
 			// running total of energy delivered by the battery under test
 			watt_hour = watt_hour + (volts * amps) / 3600;
@@ -314,11 +326,18 @@ int state_3()
 	}
 }
 
+int state_4()
+{
+	lcd.clear();
+	lcd.print("Fault");
+	for (;;)
+	{
+		delay(10000);
+	}
+}
+
 int state_6()
 {
-	float temp_coeff;
-	uint16_t adc_val = 0;
-	
 	digitalWrite(OPAMP_ENABLE_PIN, LOW);	// power down op-amp to completely turn off MOSFET
 	I_SET_PWM = 0;	// Set current to minimum.
 	
@@ -334,27 +353,55 @@ int state_6()
 	lcd.setCursor(0, 0);
 	lcd_print_P(PSTR("Calibrating"));
 	lcd.setCursor(0, 1);
-	lcd_print_P(PSTR("Voltage Sense"));
-	delay(3000);
+	lcd_print_P(PSTR("Current flow"));
+	delay(1000);
 	lcd.clear();
 	lcd.setCursor(0, 0);
-	lcd_print_P(PSTR("Apply 4.50 V"));
-	lcd.setCursor(0, 1);
-	lcd_print_P(PSTR("Press to measure"));
+	lcd_print_P(PSTR("Press to start"));
 	
 	wait_for_button();
 	
-	for(int i = 0; i < 10; i++)
+	float temp_coeff = 0;
+	uint16_t adc_val = 0;
+	uint8_t eeprom_addr = 0;
+		
+	digitalWrite(OPAMP_ENABLE_PIN, HIGH);	// power up op-amp to enable MOSFET
+	
+	
+	for(uint8_t i = 0; i < sizeof(discharge_current) / sizeof(discharge_current[0]); i++)
 	{
-		adc_val += analogRead(V_SNS_PIN);
-		delay(10);
+		lcd.clear();
+		lcd.setCursor(0, 0);
+		lcd_print_P(PSTR("Set I to "));
+		lcd.print(discharge_current[i]);
+		lcd.setCursor(0, 1);
+		lcd_print_P(PSTR("Press to measure"));
+		
+		while ((flags & ENC_BUTTON_PRESSED) == 0)
+		{
+			// check if rotary encoder has moved
+			if (flags & ENC_POS_CHANGE)
+			{
+				temp_coeff += enc_count;
+				if(temp_coeff < 0) temp_coeff = 0;
+				
+				I_SET_PWM = (int)temp_coeff;
+				
+				flags &= ~ENC_POS_CHANGE;  // clear flag
+			}
+			PCICR |= (1 << ENC_PCIE); // Re-enable interrupt
+		}
+		flags &= ~ENC_BUTTON_PRESSED;	// clear flag
+		
+		eeprom_update_word((uint16_t*)eeprom_addr,(uint16_t)temp_coeff);
+		eeprom_addr += 2;
+		
+		lcd.clear();
+		lcd.setCursor(0, 0);
+		lcd_print_P(PSTR("Value stored."));
+		delay(1000);
 	}
-	adc_val = adc_val / 10;
-	
-	temp_coeff = 4.5/adc_val;
-	//temp_coeff = 3.8/adc_val;
-	eeprom_update_float(&v_sns_coeff, temp_coeff);
-	
+	//const char* prompt = PSTR("Apply 1.0 A");
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd_print_P(PSTR("Calibrating"));
@@ -364,64 +411,39 @@ int state_6()
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd_print_P(PSTR("Apply 1.0 A"));
+	//lcd_print_P(prompt);
 	lcd.setCursor(0, 1);
 	lcd_print_P(PSTR("Press to measure"));
 	
-	digitalWrite(OPAMP_ENABLE_PIN, HIGH);	// power up op-amp to enable MOSFET
 	I_SET_PWM = 1023;	// Turn MOSFET fully ON; current limited by external supply.
 	
 	wait_for_button();
 	
-	for(int i = 0; i < 10; i++)
-	{
-		adc_val += analogRead(I_SNS_PIN);
-		delay(10);
-	}
-	adc_val = adc_val / 10;
-	
+	adc_val = analogRead(I_SNS_PIN);
 	I_SET_PWM = 0;	// Set current to minimum.
+	digitalWrite(OPAMP_ENABLE_PIN, LOW);	// power down op-amp to completely turn off MOSFET
 	
 	temp_coeff = 1.0/adc_val;
-	eeprom_update_float(&i_sns_coeff, temp_coeff);
-	
+	eeprom_update_float((float*)eeprom_addr, temp_coeff);
+	eeprom_addr = eeprom_addr + sizeof(temp_coeff);
+		
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd_print_P(PSTR("Calibrating"));
 	lcd.setCursor(0, 1);
-	lcd_print_P(PSTR("Current flow"));
-	delay(1000);
+	lcd_print_P(PSTR("Voltage Sense"));
+	delay(3000);
 	lcd.clear();
 	lcd.setCursor(0, 0);
-	lcd_print_P(PSTR("Press to start"));
+	lcd_print_P(PSTR("Apply 5.00 V"));
+	lcd.setCursor(0, 1);
+	lcd_print_P(PSTR("Press to measure"));
 	
 	wait_for_button();
 	
-	lcd.clear();
-	lcd.setCursor(0, 0);
-	lcd_print_P(PSTR("Set I to 1.0 A"));
-	lcd.setCursor(0, 1);
-	lcd_print_P(PSTR("Press when done"));
-	
-	temp_coeff = 0;
-	while ((flags & ENC_BUTTON_PRESSED) == 0)
-	{
-		// check if rotary encoder has moved
-		if (flags & ENC_POS_CHANGE)
-		{
-			temp_coeff += enc_count;
-			if(temp_coeff < 0) temp_coeff = 0;
-			
-			I_SET_PWM = (int)temp_coeff;
-			
-			flags &= ~ENC_POS_CHANGE;  // clear flag
-		}
-		PCICR |= (1 << ENC_PCIE); // Re-enable interrupt
-	}
-	flags &= ~ENC_BUTTON_PRESSED;	// clear flag
-	
-	digitalWrite(OPAMP_ENABLE_PIN, LOW);	// power down op-amp to completely turn off MOSFET
-	
-	eeprom_update_word(&i_set_coeff,(uint16_t)temp_coeff);
+	adc_val += analogRead(V_SNS_1_PIN);
+	temp_coeff = 5.0/adc_val;
+	eeprom_update_float((float*)eeprom_addr, temp_coeff);
 	
 	lcd.clear();
 	lcd.setCursor(0, 0);
@@ -429,6 +451,38 @@ int state_6()
 	delay(2000);
 	
 	return 0;
+}
+
+int verify_calibration_coeeficients()
+{
+	uint16_t eeprom_int_val;
+	float eeprom_float_val;
+	uint16_t eeprom_addr = 0;
+	for(uint8_t i = 0; i < sizeof(discharge_current) / sizeof(discharge_current[0]); i++)
+	{
+		eeprom_int_val = eeprom_read_word((uint16_t*)eeprom_addr);
+		if(eeprom_int_val == 0xFFFF)
+		{
+			return 0;
+		}
+		eeprom_addr += sizeof(discharge_current[i]);
+	}
+
+	
+	eeprom_float_val = eeprom_read_float((float*)eeprom_addr);
+	if(eeprom_float_val != eeprom_float_val)
+	{
+		return 0;
+	}
+	eeprom_addr += 4;
+	
+	eeprom_float_val = eeprom_read_float((float*)eeprom_addr);
+	if(eeprom_float_val != eeprom_float_val)
+	{
+		return 0;
+	}
+	
+	return 1;
 }
 
 void wait_for_button()
@@ -440,18 +494,21 @@ void wait_for_button()
 	flags &= ~ENC_BUTTON_PRESSED;	// clear flag
 }
 
-double adc_read(int pin)
-{
-	double temp;
-
-	temp = analogRead(pin);
-	//temp = (temp * V_REF) / ADC_RES;
-	temp = temp * eeprom_read_float(&v_sns_coeff);
-
-	return temp;
+float read_voltage()
+{	
+	static uint8_t eeprom_addr = sizeof(discharge_current) + 4;
+	static float v_sns_coeff = eeprom_read_float((float*)eeprom_addr);
+	
+	return analogRead(V_SNS_1_PIN) * v_sns_coeff;
 }
 
-
+float read_current()
+{
+	static uint8_t eeprom_addr = sizeof(discharge_current);
+	static float i_sns_coeff = eeprom_read_float((float*)eeprom_addr);
+	
+	return analogRead(I_SNS_PIN) * i_sns_coeff;
+}
 
 float select_battery()
 {
@@ -521,11 +578,10 @@ int set_num_of_cells()
 	return temp;
 }
 
-float set_discharge_current()
+int set_discharge_current()
 {
-	int discharge_current[] = { 100, 250, 500, 750, 1000, 1500, 2000, 2500 };
-	uint8_t arr_elem_count = sizeof(discharge_current)/sizeof(int);
 	int8_t temp = 1;
+	uint8_t arr_elem_count = sizeof(discharge_current)/sizeof(discharge_current[0]);
 		
 	lcd.clear();
 	lcd.setCursor(0, 0);
@@ -556,13 +612,19 @@ float set_discharge_current()
 	}
 	flags &= ~ENC_BUTTON_PRESSED;	// clear flag
 	
-	return discharge_current[temp] / 1000.0;
+	/*
+	 * PWM compare value for selected discharge current is stored in EEPROM.
+	 * To calculate memory address multiply array index by size of the element.
+	 */
+	uint8_t eeprom_addr = temp * sizeof(discharge_current[temp]);
+	return eeprom_read_word((uint16_t*)eeprom_addr);
 }
 
 void lcd_discharge_labels()
 {
 	lcd.clear();
-	lcd_print_P(PSTR("V: "));
+	lcd.setCursor(5, 0);
+	lcd_print_P(PSTR("V"));
 	lcd.setCursor(9, 0);
 	lcd_print_P(PSTR("A: "));
 	lcd.setCursor(0, 1);
@@ -572,7 +634,7 @@ void lcd_discharge_labels()
 
 void lcd_discharge_update()
 {
-	lcd.setCursor(4, 0);
+	lcd.setCursor(0, 0);
 	lcd.print(volts);
 	lcd.setCursor(12, 0);
 	lcd.print(amps);
@@ -660,3 +722,28 @@ ISR(ENC_INT_VECT)
 	}
 	else PCICR |= (1 << ENC_PCIE); // Re-enable interrupt
 }
+/*
+float voltage_measure()
+{
+	uint16_t adc_read_value;
+	uint8_t adc_channel[] = {V_SNS_1_PIN};
+	float v_coeff[] = {0.009806, 0.029418};
+	static int8_t i = 1;
+	
+	adc_read_value = analogRead(adc_channel[i]);
+	
+	while(adc_read_value < 400 && i != 0)
+	{
+		i = i - 1;
+		adc_read_value = analogRead(adc_channel[i]);
+	}
+	
+	while(adc_read_value > 1000 && i != 1)
+	{
+		i = i + 1;
+		adc_read_value = analogRead(adc_channel[i]);
+	}
+	
+	return adc_read_value * v_coeff[i];
+}
+*/
